@@ -1,8 +1,7 @@
-# SimIIR 2.0
+# SimIIR 3
 
-SimIIR 2.0 extends the Python-based SimIIR framework for simulating interactive information retrieval (IIR) that was originally released by Leif Azzopardi and David Maxwell [https://github.com/leifos/simiir]. 
+SimIIR 3 extends the Python-based SimIIR framework for simulating interactive information retrieval (IIR) that was originally released by Leif Azzopardi and David Maxwell [https://github.com/leifos/simiir] and extended by Zerhoudi et al. [https://github.com/padas-lab-de/simiir-2]. 
 
-SimIIR 2.0 supports Python3 and includes several datasets and additional simulation algorithms for querying and other user interactions.
 
 ## Framework Architecture
 
@@ -25,9 +24,6 @@ Add trec_eval to your PATH.
 Create a virtual environment with the packages in requirements.txt (this is the same as the one for ifind).
 
 ## Dataset
-
-In our experiments, we use the Sowiport User Search Session dataset (SUSS) dataset.
-The dataset is publicly available at [http://dx.doi.org/10.7802/1].
 
 SimIIR simulate user search session using only a list of five major actions: QUERY (i.e., formulating a query), SERP (i.e., viewing the search result page), SNIPPET (i.e., viewing the document’s metadata), DOC (i.e., viewing the full document’s content) and MARK (i.e., marking the document as relevant or not). We therefore cluster SUSS’s list of actions and pages into broader groups to match the actions we have available in SimIIR (e.g., "QUERY"
 action in SimIIR represents the group of actions "issue a first query", "reformulate a query" and "click query suggestion" in SUSS) and remove the non-search related actions (e.g., visiting the home page).
