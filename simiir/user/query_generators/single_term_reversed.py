@@ -1,4 +1,4 @@
-from simiir.user_query_generators.single_term_generator import SingleTermQueryGenerator
+from simiir.user.query_generators.single_term import SingleTermQueryGenerator
 
 class SingleTermQueryGeneratorReversed(SingleTermQueryGenerator):
     """

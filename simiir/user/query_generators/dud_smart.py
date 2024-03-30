@@ -1,9 +1,9 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
-from simiir.user_query_generators.base_generator import BaseQueryGenerator
+from simiir.user.query_generators.base import BaseQueryGenerator
 
-from simiir.user_query_generators.single_term_generator import SingleTermQueryGenerator
-from simiir.user_query_generators.smarter_generator import SmarterQueryGenerator
+from simiir.user.query_generators.single_term import SingleTermQueryGenerator
+from simiir.user.query_generators.smarter import SmarterQueryGenerator
 
 import random
 import string

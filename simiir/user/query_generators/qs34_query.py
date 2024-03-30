@@ -1,6 +1,6 @@
 __author__ = 'leif'
-from simiir.user_query_generators.base_generator import BaseQueryGenerator
-from simiir.user_query_generators.smarter_generator import  SmarterQueryGenerator
+from simiir.user.query_generators.base import BaseQueryGenerator
+from simiir.user.query_generators.smarter import  SmarterQueryGenerator
 from simiir.utils import lm_methods
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration

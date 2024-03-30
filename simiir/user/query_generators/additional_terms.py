@@ -1,6 +1,6 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
-from simiir.user_query_generators.smarter_generator import SmarterQueryGenerator
+from simiir.user.query_generators.smarter import SmarterQueryGenerator
 
 class AdditionalQueryGenerator(SmarterQueryGenerator):
     """

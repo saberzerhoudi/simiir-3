@@ -1,4 +1,4 @@
-from simiir.user_query_generators.base_generator import BaseQueryGenerator
+from simiir.user.query_generators.base import BaseQueryGenerator
 import requests
 import urllib.parse
 

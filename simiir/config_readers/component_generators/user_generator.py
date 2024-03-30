@@ -16,7 +16,7 @@ class UserComponentGenerator(BaseComponentGenerator):
 
         # Create the user's query generator.
         self.query_generator = self._get_object_reference(config_details=self._config_dict['queryGenerator'],
-                                                          package='user_query_generators',
+                                                          package='user.query_generators',
                                                           components=[])
         
         # Create the search context object.

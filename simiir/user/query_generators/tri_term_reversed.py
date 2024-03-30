@@ -1,4 +1,4 @@
-from simiir.user_query_generators.tri_term_generator import TriTermQueryGenerator
+from simiir.user.query_generators.tri_term import TriTermQueryGenerator
 
 class TriTermQueryGeneratorReversed(TriTermQueryGenerator):
     """
