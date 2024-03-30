@@ -16,7 +16,7 @@ class UserComponentGenerator(BaseComponentGenerator):
 
         # Create the user's query generator.
         self.query_generator = self._get_object_reference(config_details=self._config_dict['queryGenerator'],
-                                                          package='query_generators',
+                                                          package='user_query_generators',
                                                           components=[])
         
         # Create the search context object.
@@ -30,13 +30,13 @@ class UserComponentGenerator(BaseComponentGenerator):
         
         # Create the user's snippet classifier.
         self.snippet_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['snippetClassifier'],
-                                                             package='text_classifiers',
+                                                             package='user_result_classifiers',
                                                              components=[('topic', self.__simulation_components.topic),
                                                                          ('user_context', self.user_context)])
         
         # Create the uer's document classifier.
         self.document_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['documentClassifier'],
-                                                              package='text_classifiers',
+                                                              package='user_result_classifiers',
                                                               components=[('topic', self.__simulation_components.topic),
                                                                           ('user_context', self.user_context)])
         
@@ -48,13 +48,13 @@ class UserComponentGenerator(BaseComponentGenerator):
         
         # Create the decision maker (judging relevancy).
         self.decision_maker = self._get_object_reference(config_details=self._config_dict['stoppingDecisionMaker'],
-                                                         package='stopping_decision_makers',
+                                                         package='user_result_stopping_decision_makers',
                                                          components=[('user_context', self.user_context),
                                                                      ('logger', self.logger)])
         
         # Create the SERP impression component (used for some more advanced stopping models).
         self.serp_impression = self._get_object_reference(config_details=self._config_dict['serpImpression'],
-                                                          package='serp_impressions',
+                                                          package='user_serp_impressions',
                                                           components=[('user_context', self.user_context)])
     
     def prettify(self):
