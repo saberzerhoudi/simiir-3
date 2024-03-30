@@ -7,7 +7,7 @@ class FixedCostGoalLogger(FixedCostLogger):
     """
     def __init__(self,
                  output_controller,
-                 search_context,
+                 user_context,
                  time_limit=300,
                  marked_goal=3,
                  query_cost=10,
@@ -21,7 +21,7 @@ class FixedCostGoalLogger(FixedCostLogger):
         self._marked_goal = marked_goal  # How many documents need to be saved before being satisfied?
         
         super(FixedCostGoalLogger, self).__init__(output_controller,
-                                                    search_context,
+                                                    user_context,
                                                     time_limit,
                                                     query_cost,
                                                     document_cost,
@@ -34,7 +34,7 @@ class FixedCostGoalLogger(FixedCostLogger):
         Concrete implementation of the abstract get_progress() method.
         Returns a value between 0 and 1 representing how far through the current simulation the user is.
         """
-        return len(self._search_context.get_issued_queries()) / float(len(self._search_context.get_all_queries()))
+        return len(self._user_context.get_issued_queries()) / float(len(self._user_context.get_all_queries()))
     
     def is_finished(self):
         """
@@ -42,7 +42,7 @@ class FixedCostGoalLogger(FixedCostLogger):
         Returns True if the user hits the goal target, or the hard time limit has been met.
         Or, if there are no queries left in the generated list to issue!
         """
-        relevant_count = len(self._search_context.get_relevant_documents())
+        relevant_count = len(self._user_context.get_relevant_documents())
         
         # Returns true if one of the following two conditions are met:
         #   the marked goal has been reached, or

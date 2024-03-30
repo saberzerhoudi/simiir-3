@@ -6,11 +6,11 @@ class TimeDecisionMaker(BaseDecisionMaker):
     A concrete implementation of a decision maker, implementing the time based stopping rule.
     A searcher using this rule will stop after a predetermined number of seconds have elapsed since they issued a query.
     """
-    def __init__(self, search_context, logger, timeout_threshold=60):
+    def __init__(self, user_context, logger, timeout_threshold=60):
         """
         Instantiates the decision maker, with a timeout threshold parameter (in seconds, defaulting to 60).
         """
-        super(TimeDecisionMaker, self).__init__(search_context, logger)
+        super(TimeDecisionMaker, self).__init__(user_context, logger)
         self.__timeout_threshold = timeout_threshold  # This is our threshold; if we reach this value or go above it, we stop.
         
     def decide(self):

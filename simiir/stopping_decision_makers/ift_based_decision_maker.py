@@ -14,8 +14,8 @@ class IftBasedDecisionMaker(BaseDecisionMaker):
     else it returns Actions.SNIPPET
     """
 
-    def __init__(self, search_context, logger, gain_threshold=0.015, query_time=15.0, doc_time=20.0,discount=0.5, rank_threshold=1):
-        super(IftBasedDecisionMaker, self).__init__(search_context, logger)
+    def __init__(self, user_context, logger, gain_threshold=0.015, query_time=15.0, doc_time=20.0,discount=0.5, rank_threshold=1):
+        super(IftBasedDecisionMaker, self).__init__(user_context, logger)
         self.__rank_threshold = rank_threshold  # Before basing the decision on the gain recieved, examine this many documents first
         self.__gain_threshold = gain_threshold  # average gain per second
         # The after rate of gain, if the current rate of gain does not exceed this... STOP
@@ -28,12 +28,12 @@ class IftBasedDecisionMaker(BaseDecisionMaker):
         First checks to see if the rank threshold is exceeded, i.e. have they seen enough to make an estimate of the gain
         if so, then, is the current rate of gain greater than or equal to the average rate of gain, if so SNIPPET, else QUERY
         """
-        if self._search_context.get_current_serp_position() <  self.__rank_threshold:
+        if self._user_context.get_current_serp_position() <  self.__rank_threshold:
             return Actions.SNIPPET
         
         dis_cum_gain = 0.0
         pos = 0.0
-        examined_snippets = self._search_context.get_examined_snippets()
+        examined_snippets = self._user_context.get_examined_snippets()
         
         for snippet in examined_snippets:
             pos = pos + 1.0
@@ -46,7 +46,7 @@ class IftBasedDecisionMaker(BaseDecisionMaker):
         total_time = (float(self.__query_time) + (float(self.__doc_time)*pos))
         avg_dis_cum_gain = dis_cum_gain / total_time
 
-        log.debug("IFT1: q: {0} pos: {1} gps: {2}, {3}, {4}".format(self._search_context.get_last_query().terms, pos, avg_dis_cum_gain, dis_cum_gain, total_time))
+        log.debug("IFT1: q: {0} pos: {1} gps: {2}, {3}, {4}".format(self._user_context.get_last_query().terms, pos, avg_dis_cum_gain, dis_cum_gain, total_time))
 
         if avg_dis_cum_gain >= self.__gain_threshold:
             return Actions.SNIPPET
@@ -60,8 +60,8 @@ class Ift2BasedDecisionMaker(BaseDecisionMaker):
     else it returns Actions.SNIPPET
     """
 
-    def __init__(self, search_context, gain_threshold=0.015, query_time=15.0, doc_time=20.0, snip_time=3.0, discount=0.5, rank_threshold=1):
-        super(Ift2BasedDecisionMaker, self).__init__(search_context)
+    def __init__(self, user_context, gain_threshold=0.015, query_time=15.0, doc_time=20.0, snip_time=3.0, discount=0.5, rank_threshold=1):
+        super(Ift2BasedDecisionMaker, self).__init__(user_context)
         self.__rank_threshold = rank_threshold  # Before basing the decision on the gain recieved, examine this many documents first
         self.__gain_threshold = gain_threshold  # average gain per second
         # The after rate of gain, if the current rate of gain does not exceed this... STOP
@@ -79,14 +79,14 @@ class Ift2BasedDecisionMaker(BaseDecisionMaker):
 
         """
 
-        if self._search_context.get_current_serp_position() <  self.__rank_threshold:
+        if self._user_context.get_current_serp_position() <  self.__rank_threshold:
             return Actions.SNIPPET
 
 
         dis_cum_gain = 0.0
         pos = 0.0
-        examined_snippets = self._search_context.get_examined_snippets()
-        examined_docs = self._search_context.get_examined_documents()
+        examined_snippets = self._user_context.get_examined_snippets()
+        examined_docs = self._user_context.get_examined_documents()
         for doc in examined_docs:
             pos = pos + 1.0
             j = float(doc.judgment)
@@ -101,7 +101,7 @@ class Ift2BasedDecisionMaker(BaseDecisionMaker):
         total_time = self.__query_time + (nd * self.__doc_time) +(ns * self.__snip_time )
         avg_dis_cum_gain = dis_cum_gain / total_time
 
-        log.debug("IFT2: q: {0} pos: {1} gps: {2}, {3}, {4}".format(self._search_context.get_last_query().terms, pos, avg_dis_cum_gain, dis_cum_gain, total_time))
+        log.debug("IFT2: q: {0} pos: {1} gps: {2}, {3}, {4}".format(self._user_context.get_last_query().terms, pos, avg_dis_cum_gain, dis_cum_gain, total_time))
 
         if avg_dis_cum_gain >= self.__gain_threshold:
             return Actions.SNIPPET

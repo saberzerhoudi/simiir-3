@@ -17,12 +17,12 @@ class DudSmarterInterleavedQueryGenerator(BaseQueryGenerator):
         super(DudSmarterInterleavedQueryGenerator, self).__init__(stopword_file, background_file=background_file, allow_similar=True)
         self.__smarter = SmarterQueryGenerator(stopword_file, background_file)
 
-    def generate_query_list(self, search_context):
+    def generate_query_list(self, user_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
-        topic = search_context.topic
-        smarter_queries = self.__smarter.generate_query_list(search_context)
+        topic = user_context.topic
+        smarter_queries = self.__smarter.generate_query_list(user_context)
         
         interleaved_queries = []
         

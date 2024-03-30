@@ -32,13 +32,13 @@ class BaseQueryGenerator(object):
         if self._background_file:
             self.background_language_model = lm_methods.read_in_background(self._background_file)
 
-    def _generate_topic_language_model(self, search_context):
+    def _generate_topic_language_model(self, user_context):
 
         """
         Given a Topic object, returns a language model representation for the given topic.
         Override this method in inheriting classes to generate and return different language models.
         """
-        topic = search_context.topic
+        topic = user_context.topic
         topic_text = "{0} {1}".format(topic.title, topic.content)
 
         document_term_counts = lm_methods.extract_term_dict_from_text(topic_text, self._stopword_file)
@@ -48,14 +48,14 @@ class BaseQueryGenerator(object):
         return topic_language_model
 
 
-    def generate_query_list(self, search_context):
+    def generate_query_list(self, user_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
-        topic = search_context.topic
+        topic = user_context.topic
         topic_text = "{0} {1}".format(topic.title, topic.content)
 
-        topic_lang_model = self._generate_topic_language_model(search_context)
+        topic_lang_model = self._generate_topic_language_model(user_context)
         
         bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
 
@@ -86,31 +86,31 @@ class BaseQueryGenerator(object):
         return stem(term)
     
 
-    def update_model(self, search_context):
+    def update_model(self, user_context):
         """
         Enables the model of query/topic to be updated, based on the search context
         The update model based on the documents etc in the search context (i.e. memory of the user)
 
-        :param  search_context: search_contexts.search_context object
+        :param  user_context: user_contexts.user_context object
         :return: returns True is topic model is updated.
         """
         return False
 
 
-    def get_next_query(self, search_context):
+    def get_next_query(self, user_context):
         """
         Returns the next query - if one that hasn't been issued before is present.
         """
         if self._query_list is None:
-            self._query_list = self.generate_query_list(search_context)
+            self._query_list = self.generate_query_list(user_context)
         
-        if search_context.query_limit > 0:  # If query_limit is a positive integer, a query limit is enforced. So check the length.
-            number_queries = len(search_context.get_issued_queries())
+        if user_context.query_limit > 0:  # If query_limit is a positive integer, a query limit is enforced. So check the length.
+            number_queries = len(user_context.get_issued_queries())
             
-            if number_queries == search_context.query_limit:  # If this condition is met, no more queries may be issued.
+            if number_queries == user_context.query_limit:  # If this condition is met, no more queries may be issued.
                 return None
         
-        issued_query_list = search_context.get_issued_queries()
+        issued_query_list = user_context.get_issued_queries()
         
         for query in self._query_list:
             candidate_query = query[0]

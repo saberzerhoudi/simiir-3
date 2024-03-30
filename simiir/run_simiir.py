@@ -1,11 +1,12 @@
 import os
 import sys
-from sim_user import SimulatedUser
-from progress_indicator import ProgressIndicator
-from config_readers.simulation_config_reader import SimulationConfigReader
-
 import gc
 import logging
+from progress_indicator import ProgressIndicator
+
+from users.sim_user import SimulatedUser
+from config_readers.simulation_config_reader import SimulationConfigReader
+
 
 def main(config_filename):
     """

@@ -9,7 +9,7 @@ class StochasticSERPImpression(BaseSERPImpression):
     dice (good_abandon_probability).
     """
     def __init__(self,
-                 search_context,
+                 user_context,
                  qrel_file,
                  host=None,
                  port=None,
@@ -17,7 +17,7 @@ class StochasticSERPImpression(BaseSERPImpression):
                  bad_abandon_probability=0.5,
                  base_seed=0,
                  viewport_precision_threshold=0.1):
-        super(StochasticSERPImpression, self).__init__(search_context=search_context,
+        super(StochasticSERPImpression, self).__init__(user_context=user_context,
                                                        qrel_file=qrel_file,
                                                        host=host,
                                                        port=port)

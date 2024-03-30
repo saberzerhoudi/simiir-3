@@ -7,7 +7,7 @@ class FixedCostLoggerNoTime(FixedCostLogger):
     """
     def __init__(self,
                  output_controller,
-                 search_context,
+                 user_context,
                  query_cost=10,
                  document_cost=20,
                  snippet_cost=3,
@@ -20,7 +20,7 @@ class FixedCostLoggerNoTime(FixedCostLogger):
         time_limit = 0
         
         super(FixedCostLoggerNoTime, self).__init__(output_controller,
-                                                    search_context,
+                                                    user_context,
                                                     time_limit,
                                                     query_cost,
                                                     document_cost,
@@ -33,7 +33,7 @@ class FixedCostLoggerNoTime(FixedCostLogger):
         Concrete implementation of the abstract get_progress() method.
         Returns a value between 0 and 1 representing how far through the current simulation the user is.
         """
-        return len(self._search_context.get_issued_queries()) / float(len(self._search_context.get_all_queries()))
+        return len(self._user_context.get_issued_queries()) / float(len(self._user_context.get_all_queries()))
     
     def is_finished(self):
         """

@@ -7,11 +7,11 @@ class INSTDecisionMaker(BaseDecisionMaker):
     A decision maker implementing the INST metric.
     Equations from Moffat et al. (ADCS 2015)
     """
-    def __init__(self, search_context, logger, t=5, base_seed=0):
+    def __init__(self, user_context, logger, t=5, base_seed=0):
         """
         Instantiates the decision maker, with a T (expected documents to find) value of 5.
         """
-        super(INSTDecisionMaker, self).__init__(search_context, logger)
+        super(INSTDecisionMaker, self).__init__(user_context, logger)
         self.__t = t
         
         self.__random = Random()
@@ -22,7 +22,7 @@ class INSTDecisionMaker(BaseDecisionMaker):
         Implements INST. Given the positional weightings (W), we can, with a roll of the dice, decide whether the searcher
         should continue examining the SERP, or stop and abandon it.
         """
-        examined_snippets = self._search_context.get_examined_snippets()
+        examined_snippets = self._user_context.get_examined_snippets()
         rank = len(examined_snippets) # Assumption here that the rank is == to the number of snippets examined.
         
         r_i = self.__calculate_R_i(rank, examined_snippets)

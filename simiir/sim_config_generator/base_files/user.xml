@@ -23,8 +23,8 @@
 		{10}
 	</logger>
 	
-	<searchContext class="{11}">
+	<userContext class="{11}">
 		{12}
-	</searchContext>
+	</userContext>
 
 </userConfiguration>

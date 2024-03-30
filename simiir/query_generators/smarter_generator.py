@@ -19,17 +19,17 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         self.title_weight = 3
 
 
-    def _make_topic_text(self, search_context):
+    def _make_topic_text(self, user_context):
 
-        title_text = '{0} '.format(search_context.topic.title) * self.title_weight
-        topic_text = '{0} {1}'.format(title_text, search_context.topic.content)
+        title_text = '{0} '.format(user_context.topic.title) * self.title_weight
+        topic_text = '{0} {1}'.format(title_text, user_context.topic.content)
         return topic_text
 
-    def _generate_topic_language_model(self, search_context):
+    def _generate_topic_language_model(self, user_context):
         """
         creates an empirical language model based on the search topic, or a smoothed language model if a background model has been loaded.
         """
-        topic_text = self._make_topic_text(search_context)
+        topic_text = self._make_topic_text(user_context)
         topic_term_counts = lm_methods.extract_term_dict_from_text(topic_text, self._stopword_file)
 
         
@@ -40,17 +40,17 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         else:
             return topic_language_model
 
-    def generate_query_list(self, search_context):
+    def generate_query_list(self, user_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
 
-        topic_text = search_context.topic.get_topic_text()
+        topic_text = user_context.topic.get_topic_text()
         if self.topic_lang_model is None:
-            self.topic_lang_model = self._generate_topic_language_model(search_context)
+            self.topic_lang_model = self._generate_topic_language_model(user_context)
 
 
-        snip_text = self._get_snip_text(search_context)
+        snip_text = self._get_snip_text(user_context)
 
         all_text = topic_text + ' ' + snip_text
 
@@ -86,15 +86,15 @@ class SmarterQueryGenerator(BaseQueryGenerator):
 
 
 
-    def update_model(self, search_context):
+    def update_model(self, user_context):
         if not self.updating:
             return False
 
-        snippet_text = self._get_snip_text(search_context)
+        snippet_text = self._get_snip_text(user_context)
         snippet_text = self._check_terms(snippet_text)
 
         if snippet_text:
-            topic_text = search_context.topic.get_topic_text()
+            topic_text = user_context.topic.get_topic_text()
             all_text = '{0} {1}'.format(topic_text, snippet_text)
 
             #snippet_term_counts = lm_methods.extract_term_dict_from_text(snippet_text, self._stopword_file)
@@ -115,8 +115,8 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         else:
             return False
     
-    def _get_snip_text(self, search_context):
-        document_list = search_context.get_all_examined_snippets()
+    def _get_snip_text(self, user_context):
+        document_list = user_context.get_all_examined_snippets()
         
         # iterate through document_list, pull out relevant snippets / text
         rel_text_list = []

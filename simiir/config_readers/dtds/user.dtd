@@ -11,8 +11,7 @@ Date:   2017-05-02
 <!ATTLIST attribute          value CDATA #REQUIRED>
 <!ATTLIST attribute          is_argument CDATA #REQUIRED>
 
-<!ELEMENT userConfiguration  (algorithm, queryGenerator, textClassifiers, stoppingDecisionMaker, logger, searchContext, serpImpression)>
-<!-- <!ELEMENT userConfiguration  (queryGenerator, textClassifiers, stoppingDecisionMaker, logger, searchContext, serpImpression)> -->
+<!ELEMENT userConfiguration  (algorithm, queryGenerator, textClassifiers, stoppingDecisionMaker, logger, userContext, serpImpression)>
 <!ATTLIST userConfiguration  id CDATA #REQUIRED>
 
 
@@ -37,8 +36,8 @@ Date:   2017-05-02
 <!ELEMENT logger             (attribute*)>
 <!ATTLIST logger             class CDATA #REQUIRED>
 
-<!ELEMENT searchContext      (attribute*)>
-<!ATTLIST searchContext      class CDATA #REQUIRED>
+<!ELEMENT userContext      (attribute*)>
+<!ATTLIST userContext      class CDATA #REQUIRED>
 
 <!ELEMENT serpImpression     (attribute*)>
 <!ATTLIST serpImpression     class CDATA #REQUIRED>

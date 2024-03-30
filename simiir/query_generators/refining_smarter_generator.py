@@ -10,15 +10,15 @@ class RefiningSmarterQueryGenerator(SmarterQueryGenerator):
         self.topic_lang_model = None
         self.title_weight = 3
     
-    def generate_query_list(self, search_context):
+    def generate_query_list(self, user_context):
         """
         Calls the SmarterQueryGenerator, and manipulates the list depending upon the query number for the session.
         Guaranteed to start with two single-term queries, before posing a two-term query, with subsequent queries
         based upon the SmarterQueryGenerator. Mimics a couple of poor queries before the user gets up to speed.
         """
-        smarter_query_list = super(RefiningSmarterQueryGenerator, self).generate_query_list(search_context)
+        smarter_query_list = super(RefiningSmarterQueryGenerator, self).generate_query_list(user_context)
         new_query_list = []
-        query_count = search_context.get_session_query_count()
+        query_count = user_context.get_session_query_count()
         start_at = 0
         
         for query_tuple in smarter_query_list:

@@ -2,7 +2,7 @@ import math
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
-from simiir.search_contexts import search_context
+from simiir.user_contexts import user_context
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
 import logging
 
@@ -13,11 +13,11 @@ class IFindTextClassifier(BaseTextClassifier):
     """
     
     """
-    def __init__(self, topic, search_context, stopword_file=[], background_file=[]):
+    def __init__(self, topic, user_context, stopword_file=[], background_file=[]):
         """
         
         """
-        super(IFindTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
+        super(IFindTextClassifier, self).__init__(topic, user_context, stopword_file, background_file)
         self.threshold = 0.0
         self.mu = 100.0
         self.make_topic_language_model()
@@ -73,15 +73,15 @@ class IFindTextClassifier(BaseTextClassifier):
             return math.log(topic_term_prob/background_term_prob, 2.0)
 
 
-    def update_model(self, search_context):
+    def update_model(self, user_context):
 
         if self.updating:
             ## Once we develop more update methods, it is probably worth making this a strategy
             ## so that setting the update_method changes the list of documents to use.
             if self.update_method == 1:
-                document_list = search_context.get_all_examined_documents()
+                document_list = user_context.get_all_examined_documents()
             else:
-                document_list = search_context.get_all_examined_snippets()
+                document_list = user_context.get_all_examined_snippets()
 
             # iterate through document_list, pull out relevant snippets / text
             rel_text_list = []

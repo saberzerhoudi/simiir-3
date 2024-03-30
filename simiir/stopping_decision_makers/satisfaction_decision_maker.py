@@ -6,11 +6,11 @@ class SatisfactionDecisionMaker(BaseDecisionMaker):
     A concrete implementation of a decision maker, implementing the satisfaction/count stopping rules.
     Instructs a searcher to stop iif the searcher has found a predetermined number of snippets judged to be relevant.
     """
-    def __init__(self, search_context, logger, relevant_threshold=3):
+    def __init__(self, user_context, logger, relevant_threshold=3):
         """
         Instantiates the decision maker, using a default relevant threshold of 3.
         """
-        super(SatisfactionDecisionMaker, self).__init__(search_context, logger)
+        super(SatisfactionDecisionMaker, self).__init__(user_context, logger)
         self.__relevant_threshold = relevant_threshold  # The threshold; get to this point, and we abandon the SERP.
     
     def decide(self):
@@ -19,7 +19,7 @@ class SatisfactionDecisionMaker(BaseDecisionMaker):
         Otherwise, we keep going until we find the required number of items (defined by self.__relevant_threshold).
         """
         counter = 0
-        examined_snippets = self._search_context.get_examined_snippets()
+        examined_snippets = self._user_context.get_examined_snippets()
         
         for snippet in examined_snippets:
             judgement = snippet.judgment

@@ -16,12 +16,12 @@ class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
     abandons the SERP. You can differentiate between what should be considered relevant (i.e. documents or snippets)
     with the consider_documents boolean switch.
     """
-    def __init__(self, search_context, logger, relevant_threshold=3, serp_size=10, nonrelevant_threshold=10, consider_documents=True):
+    def __init__(self, user_context, logger, relevant_threshold=3, serp_size=10, nonrelevant_threshold=10, consider_documents=True):
         """
         Instantiates the decision maker, using a default relevant threshold of 3, a SERP size of 10 and a
         nonrelevant threshold of 10 (equivalent of one page of the SERP).
         """
-        super(LimitedSatisfactionDecisionMaker, self).__init__(search_context, logger, relevant_threshold=relevant_threshold)
+        super(LimitedSatisfactionDecisionMaker, self).__init__(user_context, logger, relevant_threshold=relevant_threshold)
         self.__relevant_threshold = relevant_threshold  # The threshold; get to this point, and we abandon the SERP.
         self.__serp_size = serp_size
         self.__nonrelevant_threshold = nonrelevant_threshold
@@ -32,7 +32,7 @@ class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
         Apply the rules as defined in the class description.
         """
         satisfaction_decision = super(LimitedSatisfactionDecisionMaker, self).decide()
-        serp_position = self._search_context.get_current_serp_position()
+        serp_position = self._user_context.get_current_serp_position()
         relevant_count = self.__get_relevant_count()
         last_relevant_rank = self.__get_last_relevant_rank()
         
@@ -55,9 +55,9 @@ class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
         count = 0
         
         if self.__consider_documents:
-            items = self._search_context.get_examined_documents()
+            items = self._user_context.get_examined_documents()
         else:
-            items = self._search_context.get_examined_snippets()
+            items = self._user_context.get_examined_snippets()
         
         for item in items:
             if item.judgment > 0:
@@ -70,14 +70,14 @@ class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
         What was the rank of the last snippet/document considered relevant?
         If no documents have been marked, 0 is returned.
         """
-        serp_order = self._search_context.get_current_results()
+        serp_order = self._user_context.get_current_results()
         last_rank = 0
         rank = 1
         
         if self.__consider_documents:
-            items = self._search_context.get_examined_documents()
+            items = self._user_context.get_examined_documents()
         else:
-            items = self._search_context.get_examined_snippets()
+            items = self._user_context.get_examined_snippets()
         
         for item in items:
             item_doc_id = item.doc_id

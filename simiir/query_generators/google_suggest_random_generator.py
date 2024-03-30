@@ -11,12 +11,12 @@ class GoogleSuggestRandomGenerator(BaseQueryGenerator):
         super(GoogleSuggestRandomGenerator, self).__init__(stopword_file, background_file=background_file)
         self.__max_depth = max_depth
     
-    def generate_query_list(self, search_context):
+    def generate_query_list(self, user_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
 
-        topic = search_context.topic.title
+        topic = user_context.topic.title
         generated_queries = [(topic, 1)]
 
         for i in range(1, self.__max_depth):

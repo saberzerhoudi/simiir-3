@@ -10,8 +10,8 @@ class BaseSERPImpression(object):
     Contains the abstract signature for the is_serp_attractive() method.
     Also contains a concrete implementation to determine the patch quality, as per Stephen and Krebs (1986).
     """
-    def __init__(self, search_context, qrel_file, host=None, port=None):
-        self._search_context = search_context
+    def __init__(self, user_context, qrel_file, host=None, port=None):
+        self._user_context = user_context
         
         # Default values - set as attributes in the coniguration to change these values.
         self.dcg_discount = 0.5
@@ -101,8 +101,8 @@ class BaseSERPImpression(object):
         """
         Returns patch judgements from the TREC QREL file.
         """
-        results_len = self._search_context.get_current_results_length()
-        results_list = self._search_context.get_current_results()
+        results_len = self._user_context.get_current_results_length()
+        results_list = self._user_context.get_current_results()
         goto_depth = self.viewport_size
         
         if results_len < goto_depth:  # Sanity check -- what if the number of results is super small?
@@ -113,11 +113,11 @@ class BaseSERPImpression(object):
         
         # Obtain a list of previously examined snippet docids from the search context for the search session.
         # This probably should be refactored in the future, so that the objects can be directly compared, not the docids.
-        previously_examined_snippets = [snippet.doc_id for snippet in self._search_context.get_all_examined_snippets()]
+        previously_examined_snippets = [snippet.doc_id for snippet in self._user_context.get_all_examined_snippets()]
         
         for i in range(0, goto_depth):
             snippet = Document(results_list[i].whooshid, results_list[i].title, results_list[i].summary, results_list[i].docid)
-            judgement = self._qrel_data_handler.get_value_fallback(self._search_context.topic.id, results_list[i].docid)
+            judgement = self._qrel_data_handler.get_value_fallback(self._user_context.topic.id, results_list[i].docid)
             
             if judgement is None:  # Should not happen with a fallback topic; sanity check
                 judgement = 0
@@ -138,7 +138,7 @@ class BaseSERPImpression(object):
         """
         Gets the current query from the search context, and adds the computed patch type to it.
         """
-        query_object = self._search_context.get_last_query()
+        query_object = self._user_context.get_last_query()
         setattr(query_object, 'patch_type', patch_type)
     
     

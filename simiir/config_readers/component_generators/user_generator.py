@@ -1,5 +1,5 @@
 import os
-#from search_context import SearchContext
+#from user_context import UserContext
 from config_readers.component_generators.base_generator import BaseComponentGenerator
 
 class UserComponentGenerator(BaseComponentGenerator):
@@ -23,9 +23,9 @@ class UserComponentGenerator(BaseComponentGenerator):
                                                           components=[])
         
         # Create the search context object.
-        # self.search_context = self.__generate_search_context()  # When we had only a single search context class.
-        self.search_context = self._get_object_reference(config_details=self._config_dict['searchContext'],
-                                                         package='search_contexts',
+        # self.user_context = self.__generate_user_context()  # When we had only a single search context class.
+        self.user_context = self._get_object_reference(config_details=self._config_dict['userContext'],
+                                                         package='user_contexts',
                                                          components=[('search_interface', self.__simulation_components.search_interface),
                                                                      ('output_controller', self.__simulation_components.output),
                                                                      ('topic', self.__simulation_components.topic),
@@ -35,30 +35,30 @@ class UserComponentGenerator(BaseComponentGenerator):
         self.snippet_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['snippetClassifier'],
                                                              package='text_classifiers',
                                                              components=[('topic', self.__simulation_components.topic),
-                                                                         ('search_context', self.search_context)])
+                                                                         ('user_context', self.user_context)])
         
         # Create the uer's document classifier.
         self.document_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['documentClassifier'],
                                                               package='text_classifiers',
                                                               components=[('topic', self.__simulation_components.topic),
-                                                                          ('search_context', self.search_context)])
+                                                                          ('user_context', self.user_context)])
         
         # Generate the logger object for the simulation.
         self.logger = self._get_object_reference(config_details=self._config_dict['logger'],
                                                          package='loggers',
                                                          components=[('output_controller', self.__simulation_components.output),
-                                                                     ('search_context', self.search_context)])
+                                                                     ('user_context', self.user_context)])
         
         # Create the decision maker (judging relevancy).
         self.decision_maker = self._get_object_reference(config_details=self._config_dict['stoppingDecisionMaker'],
                                                          package='stopping_decision_makers',
-                                                         components=[('search_context', self.search_context),
+                                                         components=[('user_context', self.user_context),
                                                                      ('logger', self.logger)])
         
         # Create the SERP impression component (used for some more advanced stopping models).
         self.serp_impression = self._get_object_reference(config_details=self._config_dict['serpImpression'],
                                                           package='serp_impressions',
-                                                          components=[('search_context', self.search_context)])
+                                                          components=[('user_context', self.user_context)])
     
     def prettify(self):
         """
@@ -70,18 +70,18 @@ class UserComponentGenerator(BaseComponentGenerator):
         return_string = "{0}{1}{2}".format(return_string, "{0}Stopping Decision Maker: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['stoppingDecisionMaker']['@class'], os.linesep, self._prettify_attributes(self._config_dict['stoppingDecisionMaker'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}SERP Impression: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['serpImpression']['@class'], os.linesep, self._prettify_attributes(self._config_dict['serpImpression'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Logger: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['logger']['@class'], os.linesep, self._prettify_attributes(self._config_dict['logger'], self.__simulation_components.output.output_indentation)), os.linesep)
-        return_string = "{0}{1}{2}".format(return_string, "{0}Search Context: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['searchContext']['@class'], os.linesep, self._prettify_attributes(self._config_dict['searchContext'], self.__simulation_components.output.output_indentation)), os.linesep)
+        return_string = "{0}{1}{2}".format(return_string, "{0}User Context: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['userContext']['@class'], os.linesep, self._prettify_attributes(self._config_dict['userContext'], self.__simulation_components.output.output_indentation)), os.linesep)
         
         return return_string
 
-    # def __generate_search_context(self):
+    # def __generate_user_context(self):
     #     """
     #     Generate a search context object given the settings in the configuration dictionary.
     #     """
     #     topic = self.__simulation_components.topic
     #     search_interface = self.__simulation_components.search_interface
     #     
-    #     return SearchContext(search_interface=search_interface,
+    #     return UserContext(search_interface=search_interface,
     #                          output_controller=self.__simulation_components.output,
     #                          topic=topic,
     #                          query_list=self.query_generator.generate_query_list(topic))

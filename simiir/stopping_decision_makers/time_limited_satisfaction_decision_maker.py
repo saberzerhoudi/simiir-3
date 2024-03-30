@@ -9,11 +9,11 @@ class TimeLimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
     searcher -- what if they employ this rule, and then find that they cannot find the specified number of documents? They'll waste their
     time on a SERP that is not yielding anything useful.
     """
-    def __init__(self, search_context, logger, relevant_threshold=3, timeout_threshold=20):
+    def __init__(self, user_context, logger, relevant_threshold=3, timeout_threshold=20):
         """
         Instantiates the decision maker, using a default relevant threshold of 3.
         """
-        super(TimeLimitedSatisfactionDecisionMaker, self).__init__(search_context, logger, relevant_threshold)
+        super(TimeLimitedSatisfactionDecisionMaker, self).__init__(user_context, logger, relevant_threshold)
         self.__timeout_threshold = timeout_threshold  # The timeout threshold; abandon the SERP once this has been reached.
     
     def decide(self):

@@ -18,12 +18,12 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
     The limited satisfaction rule is added by us; it inherently makes sense to do so in case the judging of the SERP
     initially proves to be incorrect, and it's hard to find a certain number of relevant items -- the user will abandon after two pages of rubbish.
     """
-    def __init__(self, search_context, logger, relevant_threshold=3, timeout_threshold=60, on_mark=True, serp_size=10, nonrelevant_threshold=10):
+    def __init__(self, user_context, logger, relevant_threshold=3, timeout_threshold=60, on_mark=True, serp_size=10, nonrelevant_threshold=10):
         """
         Instantiates the combination foraging theory decision maker.
         Requires parameters from both the TimeLimitedSatisfactionDecisionMaker and TimeSinceRelevancyDecisionMaker strategies.
         """
-        super(PatchCombinationDecisionMaker, self).__init__(search_context, logger)
+        super(PatchCombinationDecisionMaker, self).__init__(user_context, logger)
         self.__relevant_threshold = relevant_threshold
         self.__timeout_threshold = timeout_threshold
         self.__serp_size = serp_size
@@ -52,7 +52,7 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
             PatchTypes.UNDEFINED        : self.__set_undefined,
         }
         
-        judged_patch_type = self._search_context.get_last_patch_type()
+        judged_patch_type = self._user_context.get_last_patch_type()
         
         if judged_patch_type is None:
             raise ValueError("No SERP has been yet examined. This exception shouldn't really happen.")
@@ -66,7 +66,7 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
         """
         Sets the stopping strategy to the satisfaction stopping strategy.
         """
-        self.__strategy = LimitedSatisfactionDecisionMaker(search_context=self._search_context,
+        self.__strategy = LimitedSatisfactionDecisionMaker(user_context=self._user_context,
                                                            logger=self._logger,
                                                            relevant_threshold=self.__relevant_threshold,
                                                            serp_size=self.__serp_size,
@@ -77,7 +77,7 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
         """
         Sets the stopping strategy to a time-based frustration rule (since last seen relevancy).
         """
-        self.__strategy = TimeSinceRelevancyDecisionMaker(search_context=self._search_context,
+        self.__strategy = TimeSinceRelevancyDecisionMaker(user_context=self._user_context,
                                                           logger=self._logger,
                                                           timeout_threshold=self.__timeout_threshold,
                                                           on_mark=self.__on_mark)

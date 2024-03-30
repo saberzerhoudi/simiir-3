@@ -4,11 +4,11 @@ from ifind.common.language_model import LanguageModel
 class BaseTextClassifier(object):
     """
     """
-    def __init__(self, topic, search_context, stopword_file=[], background_file=[]):  # Refactor; is this the best way to pass in details?
+    def __init__(self, topic, user_context, stopword_file=[], background_file=[]):  # Refactor; is this the best way to pass in details?
         self._stopword_file = stopword_file
         self._background_file = background_file
         self._topic = topic
-        self._search_context = search_context
+        self._user_context = user_context
         self.doc_score = 0.0
         self.updating = False
         self.update_method = 1
@@ -39,12 +39,12 @@ class BaseTextClassifier(object):
         self.background_language_model = LanguageModel(term_dict=vocab)
 
 
-    def update_model(self, search_context):
+    def update_model(self, user_context):
         """
         Enables the model of relevance/topic to be updated, based on the search context
         The update model based on the documents etc in the search context (i.e. memory of the user)
 
-        :param  search_context: search_contexts.search_context object
+        :param  user_context: user_contexts.user_context object
         :return: returns True is topic model is updated.
         """
         return False

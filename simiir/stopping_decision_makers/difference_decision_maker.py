@@ -8,8 +8,8 @@ class DifferenceDecisionMaker(BaseDecisionMaker):
     A concrete implementation of a decision maker.
     Using KL-Divergence to determine how "different" snippets/documents are to one another, makes a decision what to do next.
     """
-    def __init__(self, search_context, logger, stopword_file, threshold, decision_maker=1, nonrel_only=False, query_based=True, vocab_file=None, alpha=0.5):
-        super(DifferenceDecisionMaker, self).__init__(search_context, logger)
+    def __init__(self, user_context, logger, stopword_file, threshold, decision_maker=1, nonrel_only=False, query_based=True, vocab_file=None, alpha=0.5):
+        super(DifferenceDecisionMaker, self).__init__(user_context, logger)
         
         self.__stopwords = self.__get_stopwords_list(stopword_file)
         self.__threshold = threshold
@@ -36,9 +36,9 @@ class DifferenceDecisionMaker(BaseDecisionMaker):
         existing = []
 
         if self.__query_based:  # If this is query-based, we look at only snippets that were examined in the current query.
-            existing = self._search_context.get_examined_snippets()
+            existing = self._user_context.get_examined_snippets()
         else:
-            existing = self._search_context.get_all_examined_snippets()
+            existing = self._user_context.get_all_examined_snippets()
 
         if self.__nonrel_only:  # Filter to only nonrelevant documents using a list comprehension.
             existing = [snippet for snippet in existing if snippet.judgment < 1]
@@ -62,7 +62,7 @@ class DifferenceDecisionMaker(BaseDecisionMaker):
             
             seen_text = "{0} {1} {2}".format(seen_text, snippet.title, self.__clean_markup(snippet.content))
         
-        topic = self._search_context.get_topic()
+        topic = self._user_context.get_topic()
         seen_text = "{0} {1} {2}".format(seen_text, topic.title, self.__clean_markup(snippet.content))
         seen_text = "{0} {1} {2}".format(seen_text, topic.content, self.__clean_markup(snippet.content))
 

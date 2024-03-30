@@ -1,0 +1,6 @@
+.log
+.queries
+.pyc
+.cfg
+.rels
+*/__pycache__/*

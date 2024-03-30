@@ -4,8 +4,8 @@ class BaseDecisionMaker(object):
     """
     
     """
-    def __init__(self, search_context, logger):
-        self._search_context = search_context
+    def __init__(self, user_context, logger):
+        self._user_context = user_context
         self._logger = logger
     
     @abc.abstractmethod

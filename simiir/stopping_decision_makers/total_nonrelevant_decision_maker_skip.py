@@ -8,8 +8,8 @@ class TotalNonrelDecisionMakerSkip(BaseDecisionMaker):
     
     If a snippet has been encountered which has been previously examined, then the snippet does not count towards the nonrelevant total.
     """
-    def __init__(self, search_context, logger, nonrelevant_threshold=3):
-        super(TotalNonrelDecisionMakerSkip, self).__init__(search_context, logger)
+    def __init__(self, user_context, logger, nonrelevant_threshold=3):
+        super(TotalNonrelDecisionMakerSkip, self).__init__(user_context, logger)
         self.__nonrelevant_threshold = nonrelevant_threshold  # The threshold; get to this point, we stop in the current SERP.
 
     def decide(self):
@@ -18,7 +18,7 @@ class TotalNonrelDecisionMakerSkip(BaseDecisionMaker):
         Otherwise, a new query should be issued.
         """
         counter = 0
-        examined_snippets = self._search_context.get_examined_snippets()
+        examined_snippets = self._user_context.get_examined_snippets()
         previous = []
         
         for snippet in examined_snippets:

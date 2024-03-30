@@ -8,8 +8,8 @@ from stopping_decision_makers.limited_satisfaction_decision_maker import Limited
 class PatchCombinationSimplifiedDecisionMaker(BaseDecisionMaker):
     
     
-    def __init__(self, search_context, logger, relevant_threshold=3, timeout_threshold=60, on_mark=True, serp_size=10, nonrelevant_threshold=10, qrel_file=None):
-        super(PatchCombinationSimplifiedDecisionMaker, self).__init__(search_context, logger)
+    def __init__(self, user_context, logger, relevant_threshold=3, timeout_threshold=60, on_mark=True, serp_size=10, nonrelevant_threshold=10, qrel_file=None):
+        super(PatchCombinationSimplifiedDecisionMaker, self).__init__(user_context, logger)
         self.__relevant_threshold = relevant_threshold
         self.__timeout_threshold = timeout_threshold
         self.__serp_size = serp_size
@@ -25,8 +25,8 @@ class PatchCombinationSimplifiedDecisionMaker(BaseDecisionMaker):
         """
         Decides.
         """
-        topic_id = self._search_context.topic.id
-        first_doc_id = self._search_context.get_current_results()[0].docid
+        topic_id = self._user_context.topic.id
+        first_doc_id = self._user_context.get_current_results()[0].docid
         
         first_judgement = self.__qrels.get_value_fallback(topic_id, first_doc_id)
         
@@ -45,7 +45,7 @@ class PatchCombinationSimplifiedDecisionMaker(BaseDecisionMaker):
         """
         Sets the stopping strategy to the satisfaction stopping strategy.
         """
-        self.__strategy = LimitedSatisfactionDecisionMaker(search_context=self._search_context,
+        self.__strategy = LimitedSatisfactionDecisionMaker(user_context=self._user_context,
                                                            logger=self._logger,
                                                            relevant_threshold=self.__relevant_threshold,
                                                            serp_size=self.__serp_size,
@@ -57,7 +57,7 @@ class PatchCombinationSimplifiedDecisionMaker(BaseDecisionMaker):
         """
         Sets the stopping strategy to a time-based frustration rule (since last seen relevancy).
         """
-        self.__strategy = TimeSinceRelevancyDecisionMaker(search_context=self._search_context,
+        self.__strategy = TimeSinceRelevancyDecisionMaker(user_context=self._user_context,
                                                           logger=self._logger,
                                                           timeout_threshold=self.__timeout_threshold,
                                                           on_mark=self.__on_mark)

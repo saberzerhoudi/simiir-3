@@ -68,12 +68,12 @@ class OutputController(object):
         """
         Prints a summary of the results from the simulation to stdout.
         """
-        search_context_summary = self.__simulation_configuration.user.search_context.report()
+        user_context_summary = self.__simulation_configuration.user.user_context.report()
         
         print
         print
         print("{0}Results Summary:".format(" "*self.output_indentation))
-        print("{0}{1}".format(search_context_summary, os.linesep))
+        print("{0}{1}".format(user_context_summary, os.linesep))
     
     def save(self):
         """
@@ -105,8 +105,8 @@ class OutputController(object):
             log_file.write("{0}User Configuration ({1}):".format(" "*self.output_indentation, self.__simulation_configuration.user.id))
             log_file.write(self.__simulation_configuration.user.prettify())
             log_file.write(os.linesep)
-            search_context_summary = self.__simulation_configuration.user.search_context.report()
-            log_file.write(search_context_summary)
+            user_context_summary = self.__simulation_configuration.user.user_context.report()
+            log_file.write(user_context_summary)
 
             log_file.close()
 
@@ -145,7 +145,7 @@ class OutputController(object):
         Depending on the status of the relevance judgments flag, saves relevance judgments to disk.
         """
         if self.__save_relevance_judgments_flag:
-            search_context = self.__simulation_configuration.user.search_context
+            user_context = self.__simulation_configuration.user.user_context
             topic = self.__simulation_configuration.topic
             
             relevance_judgments_filename = '{0}.rels'.format(self.__simulation_configuration.base_id)
@@ -154,7 +154,7 @@ class OutputController(object):
             rank = 0
             
             with open(relevance_judgments_filename, 'w') as judgments_file:
-                for document in search_context.get_relevant_documents():
+                for document in user_context.get_relevant_documents():
                     rank = rank + 1
                     judgments_file.write("{0} Q0 {1} {2} {3} Exp{4}".format(topic.id, document.doc_id, rank, rank, os.linesep))
     

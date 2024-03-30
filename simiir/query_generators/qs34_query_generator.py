@@ -21,17 +21,17 @@ class QS34QueryGenerator(SmarterQueryGenerator):
 
 
 
-    def generate_query_list(self, search_context):
+    def generate_query_list(self, user_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
 
-        topic_text = search_context.topic.get_topic_text()
+        topic_text = user_context.topic.get_topic_text()
         if self.topic_lang_model is None:
-            self.topic_lang_model = self._generate_topic_language_model(search_context)
+            self.topic_lang_model = self._generate_topic_language_model(user_context)
 
 
-        snip_text = self._get_snip_text(search_context)
+        snip_text = self._get_snip_text(user_context)
 
         all_text = topic_text + ' ' + snip_text
 

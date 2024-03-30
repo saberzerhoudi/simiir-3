@@ -6,9 +6,9 @@ class BaseLogger(object):
     An abstract logger class. Contains the skeleton code and abstract methods to implement a full logger.
     Inherit from this class to create a different logger.
     """
-    def __init__(self, output_controller, search_context):
+    def __init__(self, output_controller, user_context):
         self._output_controller = output_controller
-        self._search_context = search_context
+        self._user_context = user_context
         self._queries_exhausted = False
     
     def log_action(self, action_name, **kwargs):

@@ -68,7 +68,7 @@ A user configuration file contains several parameters that describe user search 
 * **textClassifiers** denotes the method used to assess a document/snippet for relevance. 
 * **stoppingDecisionMaker** defines the stopping decision point at which the user stops interacting with the SERP. 
 * **logger** denotes the amount of time required for the user to interact with the system. 
-* **searchContext** keeps track of all the user's interaction with the system. 
+* **UserContext** keeps track of all the user's interaction with the system. 
 * **serpImpression** is responsible for determining whether the presented SERP is relevant enough to enter and examine in more detail.
 
 A set of sample users have been created and included in example_sims/users.

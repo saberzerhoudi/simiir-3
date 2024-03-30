@@ -14,11 +14,11 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
 
     Abstract method is_relevant() needs to be implemented.
     """
-    def __init__(self, topic, search_context, qrel_file, host=None, port=0):
+    def __init__(self, topic, user_context, qrel_file, host=None, port=0):
         """
         Initialises an instance of the classifier.
         """
-        super(BaseInformedTrecTextClassifier, self).__init__(topic, search_context, stopword_file=[], background_file=[])
+        super(BaseInformedTrecTextClassifier, self).__init__(topic, user_context, stopword_file=[], background_file=[])
         self._filename = qrel_file
         self._host = host
         self._port = port

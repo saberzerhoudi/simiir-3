@@ -59,7 +59,7 @@ class BaseComponentGenerator(object):
                     if attribute['@is_argument']:
                         kwargs[attribute['@name']] = attribute['@value']
                 
-                # For any component attributes (e.g. Topic, SearchContext)...add to kwargs!
+                # For any component attributes (e.g. Topic, UserContext)...add to kwargs!
                 for attribute_reference in components:
                     kwargs[attribute_reference[0]] = attribute_reference[1]
                 

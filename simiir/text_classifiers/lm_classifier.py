@@ -15,11 +15,11 @@ class LMTextClassifier(BaseTextClassifier):
     """
 
     """
-    def __init__(self, topic, search_context, stopword_file=[], background_file=[]):
+    def __init__(self, topic, user_context, stopword_file=[], background_file=[]):
         """
 
         """
-        super(LMTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
+        super(LMTextClassifier, self).__init__(topic, user_context, stopword_file, background_file)
         self.alpha = 1.0
         self.lam = 0.1
         self.mu = 100.0
@@ -56,7 +56,7 @@ class LMTextClassifier(BaseTextClassifier):
         log.debug("Making topic {0}".format(self._topic.id))
 
 
-    def update_model(self, search_context):
+    def update_model(self, user_context):
         """
         If updating is enabled, updates the underlying language model with the new snippet/document text.
         Returns True iif the language model is updated; False otherwise.
@@ -67,9 +67,9 @@ class LMTextClassifier(BaseTextClassifier):
             ## Once we develop more update methods, it is probably worth making this a strategy
             ## so that setting the update_method changes the list of documents to use.
             if self.update_method == 1:
-                document_list = search_context.get_all_examined_documents()
+                document_list = user_context.get_all_examined_documents()
             else:
-                document_list = search_context.get_all_examined_snippets()
+                document_list = user_context.get_all_examined_snippets()
 
             # iterate through document_list, pull out relevant snippets / text
             rel_text_list = []
