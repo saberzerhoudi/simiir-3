@@ -1,4 +1,4 @@
-from user_loggers import Actions
+from simiir.user.loggers import Actions
 from user.serp_impressions import PatchTypes
 from simiir.utils.data_handlers import get_data_handler
 from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker

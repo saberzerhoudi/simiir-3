@@ -1,5 +1,5 @@
 import random
-from user_loggers import Actions
+from simiir.user.loggers import Actions
 from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
 
 class RandomDecisionMaker(BaseDecisionMaker):

@@ -1,5 +1,5 @@
-from user_loggers import Actions
-from user_loggers.base_logger import BaseLogger
+from simiir.user.loggers import Actions
+from simiir.user.loggers.base import BaseLogger
 
 class FixedCostLogger(BaseLogger):
     """

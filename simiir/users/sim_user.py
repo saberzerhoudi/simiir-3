@@ -1,6 +1,6 @@
 import os
 import pickle
-from user_loggers import Actions
+from user.loggers import Actions
 from ifind.search.query import Query
 
 

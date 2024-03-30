@@ -1,7 +1,7 @@
-from user_loggers import Actions
-from user_loggers.fixed_cost_logger import FixedCostLogger
+from simiir.user.loggers import Actions
+from simiir.user.loggers.fixed_cost import FixedCostLogger
 
-class FixedCostLoggerNoTime(FixedCostLogger):
+class FixedCostNoTimeLogger(FixedCostLogger):
     """
     A simple extension to the FixedCostLogger - only this time, no time limit is specified.
     """
@@ -19,7 +19,7 @@ class FixedCostLoggerNoTime(FixedCostLogger):
         """
         time_limit = 0
         
-        super(FixedCostLoggerNoTime, self).__init__(output_controller,
+        super(FixedCostNoTimeLogger, self).__init__(output_controller,
                                                     user_context,
                                                     time_limit,
                                                     query_cost,

@@ -1,5 +1,5 @@
 import abc
-from user_loggers import Actions
+from simiir.user.loggers import Actions
 
 class BaseLogger(object):
     """

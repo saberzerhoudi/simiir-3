@@ -1,4 +1,4 @@
-from user_loggers import Actions
+from simiir.user.loggers import Actions
 from lxml.html.clean import Cleaner
 from utils import difference_methods
 from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
