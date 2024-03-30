@@ -1,10 +1,4 @@
 <userConfiguration id="iftuser">
-
-	<algorithm class="MarkovChain">
-        <attribute name="model_type" type="string" value="None" is_argument="true" />
-        <attribute name="transition_matrix" type="string" value="" is_argument="true" />
-        <attribute name="states" type="string" value="" is_argument="true" />
-    </algorithm>
 	
 	<queryGenerator class="TriTermQueryGenerator">
 		<attribute name="id" type="integer" value="13" is_argument="false" /><attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />

@@ -14,9 +14,6 @@ class UserComponentGenerator(BaseComponentGenerator):
         # Store the user's ID for easy access.
         self.id = self._config_dict['@id']
 
-        # Used Algorithm
-        self.algorithm = self._get_object_reference(config_details=self._config_dict['algorithm'], package='algorithms', components=[])
-        
         # Create the user's query generator.
         self.query_generator = self._get_object_reference(config_details=self._config_dict['queryGenerator'],
                                                           package='query_generators',
@@ -74,14 +71,4 @@ class UserComponentGenerator(BaseComponentGenerator):
         
         return return_string
 
-    # def __generate_user_context(self):
-    #     """
-    #     Generate a search context object given the settings in the configuration dictionary.
-    #     """
-    #     topic = self.__simulation_components.topic
-    #     search_interface = self.__simulation_components.search_interface
-    #     
-    #     return UserContext(search_interface=search_interface,
-    #                          output_controller=self.__simulation_components.output,
-    #                          topic=topic,
-    #                          query_list=self.query_generator.generate_query_list(topic))
+   

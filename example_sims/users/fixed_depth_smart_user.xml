@@ -1,11 +1,5 @@
 <userConfiguration id="fixeddepthuser">
 
-	<algorithm class="MarkovChain">
-        <attribute name="model_type" type="string" value="exploratory" is_argument="true" />
-        <attribute name="transition_matrix" type="string" value="../example_model/data/nid_session_vectors_suss_matrix.data" is_argument="true" />
-        <attribute name="states" type="string" value="../example_model/data/nid_session_vectors_suss_states.data" is_argument="true" />
-    </algorithm>
-
 	<queryGenerator class="SmarterQueryGenerator">
 		<attribute name="id" type="integer" value="13" is_argument="false" />
         <attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />

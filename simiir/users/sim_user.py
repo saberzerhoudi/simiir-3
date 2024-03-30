@@ -9,7 +9,6 @@ class SimulatedUser(object):
     The simulated user. Stores references to all the required components, and contains the logical workflow for the simulation.
     """
     def __init__(self, configuration):
-        self.__algorithm = configuration.user.algorithm
         self.__user_context = configuration.user.user_context
         self.__decision_maker = configuration.user.decision_maker
         self.__output_controller = configuration.output
@@ -45,15 +44,10 @@ class SimulatedUser(object):
             self.__do_action(Actions.SERP)
         
         def after_serp():
-            if "None" in self.__algorithm.get_model_type():
-                if self.__action_value:
-                    self.__do_action(Actions.SNIPPET)
-                else:
-                    self.__do_action(Actions.QUERY)
+            if self.__action_value:
+                self.__do_action(Actions.SNIPPET)
             else:
-                next_action = self.__algorithm.next_state(last_action)
-                self.__do_action(action_to_function_mapping[next_action])
-            
+                self.__do_action(Actions.QUERY)            
         
         def after_snippet():
             if self.__action_value:

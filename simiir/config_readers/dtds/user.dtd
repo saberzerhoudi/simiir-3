@@ -11,13 +11,8 @@ Date:   2017-05-02
 <!ATTLIST attribute          value CDATA #REQUIRED>
 <!ATTLIST attribute          is_argument CDATA #REQUIRED>
 
-<!ELEMENT userConfiguration  (algorithm, queryGenerator, textClassifiers, stoppingDecisionMaker, logger, userContext, serpImpression)>
+<!ELEMENT userConfiguration  (queryGenerator, textClassifiers, stoppingDecisionMaker, logger, userContext, serpImpression)>
 <!ATTLIST userConfiguration  id CDATA #REQUIRED>
-
-
-<!ELEMENT algorithm     (attribute*)>
-<!ATTLIST algorithm     class CDATA #REQUIRED>
-
 
 <!ELEMENT queryGenerator     (attribute*)>
 <!ATTLIST queryGenerator     class CDATA #REQUIRED>

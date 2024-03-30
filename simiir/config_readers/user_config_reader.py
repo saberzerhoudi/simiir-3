@@ -22,11 +22,7 @@ class UserConfigReader(BaseConfigReader):
         """
         # User ID
         empty_string_check(self._config_dict['@id'])
-
-        # Algorithm
-        empty_string_check(self._config_dict['algorithm']['@class'])
-        check_attributes(self._config_dict['algorithm'])
-        
+  
         # Query Generator
         empty_string_check(self._config_dict['queryGenerator']['@class'])
         check_attributes(self._config_dict['queryGenerator'])
