@@ -33,7 +33,7 @@
 		<attribute name="mark_document_cost" type="integer" value="3" is_argument="true" />
 	</logger>
 	
-	<userContext class="UserContext">
+	<userContext class="Memory">
 		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
 	</userContext>
 	

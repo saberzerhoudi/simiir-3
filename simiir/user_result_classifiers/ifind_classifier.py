@@ -2,7 +2,6 @@ import math
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
-from simiir.user_contexts import user_context
 from simiir.user_result_classifiers.base_classifier import BaseTextClassifier
 import logging
 

@@ -22,7 +22,7 @@ class UserComponentGenerator(BaseComponentGenerator):
         # Create the search context object.
         # self.user_context = self.__generate_user_context()  # When we had only a single search context class.
         self.user_context = self._get_object_reference(config_details=self._config_dict['userContext'],
-                                                         package='user_contexts',
+                                                         package='user.contexts',
                                                          components=[('search_interface', self.__simulation_components.search_interface),
                                                                      ('output_controller', self.__simulation_components.output),
                                                                      ('topic', self.__simulation_components.topic),

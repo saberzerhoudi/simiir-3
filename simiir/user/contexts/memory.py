@@ -40,7 +40,7 @@ class RelevanceRevision(NoRelevanceRevision):
         super(RelevanceRevision, self).add_irrelevant_document(document)
 
 
-class UserContext(object):
+class Memory(object):
     """
     The "memory" of the simulated user.
 
