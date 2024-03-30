@@ -1,4 +1,4 @@
-from loggers import Actions
+from user_loggers import Actions
 from user_serp_impressions import PatchTypes
 from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
 from user_result_stopping_decision_makers.time_since_relevancy_decision_maker import TimeSinceRelevancyDecisionMaker

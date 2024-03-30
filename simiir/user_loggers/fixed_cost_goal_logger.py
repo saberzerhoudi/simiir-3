@@ -1,5 +1,5 @@
-from loggers import Actions
-from loggers.fixed_cost_logger import FixedCostLogger
+from user_loggers import Actions
+from user_loggers.fixed_cost_logger import FixedCostLogger
 
 class FixedCostGoalLogger(FixedCostLogger):
     """

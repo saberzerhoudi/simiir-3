@@ -42,7 +42,7 @@ class UserComponentGenerator(BaseComponentGenerator):
         
         # Generate the logger object for the simulation.
         self.logger = self._get_object_reference(config_details=self._config_dict['logger'],
-                                                         package='loggers',
+                                                         package='user_loggers',
                                                          components=[('output_controller', self.__simulation_components.output),
                                                                      ('user_context', self.user_context)])
         

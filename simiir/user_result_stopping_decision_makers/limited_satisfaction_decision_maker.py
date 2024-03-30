@@ -1,4 +1,4 @@
-from loggers import Actions
+from user_loggers import Actions
 from user_result_stopping_decision_makers.satisfaction_decision_maker import SatisfactionDecisionMaker
 
 class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):

@@ -1,6 +1,6 @@
 import os
 import abc
-from simiir.loggers import Actions
+from simiir.user_loggers import Actions
 from ifind.search.query import Query
 from simiir.search_interfaces import Document
 import logging

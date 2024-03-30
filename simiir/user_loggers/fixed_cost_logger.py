@@ -1,5 +1,5 @@
-from loggers import Actions
-from loggers.base_logger import BaseLogger
+from user_loggers import Actions
+from user_loggers.base_logger import BaseLogger
 
 class FixedCostLogger(BaseLogger):
     """

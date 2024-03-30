@@ -1,5 +1,5 @@
 import abc
-from loggers import Actions
+from user_loggers import Actions
 
 class BaseLogger(object):
     """
