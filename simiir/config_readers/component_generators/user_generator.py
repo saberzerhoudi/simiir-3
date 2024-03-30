@@ -48,7 +48,7 @@ class UserComponentGenerator(BaseComponentGenerator):
         
         # Create the decision maker (judging relevancy).
         self.decision_maker = self._get_object_reference(config_details=self._config_dict['stoppingDecisionMaker'],
-                                                         package='user_result_stopping_decision_makers',
+                                                         package='user.result_stopping_decider',
                                                          components=[('user_context', self.user_context),
                                                                      ('logger', self.logger)])
         

@@ -1,7 +1,7 @@
 from simiir.user.loggers import Actions
-from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
-from user_result_stopping_decision_makers.total_nonrelevant_decision_maker import TotalNonrelDecisionMaker
-from user_result_stopping_decision_makers.time_limited_satisfaction_decision_maker import TimeLimitedSatisfactionDecisionMaker
+from simiir.user.result_stopping_decider.base import BaseDecisionMaker
+from simiir.user.result_stopping_decider.total_nonrelevant import TotalNonrelDecisionMaker
+from simiir.user.result_stopping_decider.time_limited_satisfaction import TimeLimitedSatisfactionDecisionMaker
 
 class SatisfactionFrustrationCombinationDecisionMaker(BaseDecisionMaker):
     """

@@ -1,5 +1,5 @@
 from simiir.user.loggers import Actions
-from user_result_stopping_decision_makers.satisfaction_decision_maker import SatisfactionDecisionMaker
+from simiir.user.result_stopping_decider.satisfaction import SatisfactionDecisionMaker
 
 class TimeLimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
     """

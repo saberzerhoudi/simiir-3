@@ -1,6 +1,6 @@
 from random import Random
 from simiir.user.loggers import Actions
-from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
+from simiir.user.result_stopping_decider.base import BaseDecisionMaker
 
 class INSTDecisionMaker(BaseDecisionMaker):
     """

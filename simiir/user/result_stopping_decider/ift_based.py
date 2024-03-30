@@ -1,6 +1,6 @@
 __author__ = 'leif'
 from simiir.user.loggers import Actions
-from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
+from simiir.user.result_stopping_decider.base import BaseDecisionMaker
 import logging
 
 log = logging.getLogger('decsion_makers.ift_based_decision_makers')

@@ -1,8 +1,8 @@
 from simiir.user.loggers import Actions
 from user.serp_impressions import PatchTypes
-from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
-from user_result_stopping_decision_makers.time_since_relevancy_decision_maker import TimeSinceRelevancyDecisionMaker
-from user_result_stopping_decision_makers.limited_satisfaction_decision_maker import LimitedSatisfactionDecisionMaker
+from simiir.user.result_stopping_decider.base import BaseDecisionMaker
+from simiir.user.result_stopping_decider.time_since_relevancy import TimeSinceRelevancyDecisionMaker
+from simiir.user.result_stopping_decider.limited_satisfaction import LimitedSatisfactionDecisionMaker
 
 class PatchCombinationDecisionMaker(BaseDecisionMaker):
     """

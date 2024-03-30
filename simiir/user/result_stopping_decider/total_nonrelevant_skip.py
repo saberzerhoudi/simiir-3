@@ -1,13 +1,15 @@
 from simiir.user.loggers import Actions
-from user_result_stopping_decision_makers.base_decision_maker import BaseDecisionMaker
+from simiir.user.result_stopping_decider.base import BaseDecisionMaker
 
-class SequentialNonrelDecisionMakerSkip(BaseDecisionMaker):
+class TotalNonrelDecisionMakerSkip(BaseDecisionMaker):
     """
     A concrete implementation of a decision maker.
     Returns True iif the depth at which a user is in a SERP is less than a predetermined value.
+    
+    If a snippet has been encountered which has been previously examined, then the snippet does not count towards the nonrelevant total.
     """
     def __init__(self, user_context, logger, nonrelevant_threshold=3):
-        super(SequentialNonrelDecisionMakerSkip, self).__init__(user_context, logger)
+        super(TotalNonrelDecisionMakerSkip, self).__init__(user_context, logger)
         self.__nonrelevant_threshold = nonrelevant_threshold  # The threshold; get to this point, we stop in the current SERP.
 
     def decide(self):
@@ -25,17 +27,16 @@ class SequentialNonrelDecisionMakerSkip(BaseDecisionMaker):
             if judgment == 0:
                 if self.__get_previous_judgment(previous, snippet) != 0:
                     counter = counter + 1
-
+                    
                     if counter == self.__nonrelevant_threshold:
                         return Actions.QUERY
-            else:
-                # Reset the counter; we have seen a relevant document! Either seen previously or not seen previously.
-                counter = 0
             
+            # Add the snippet to our list of previously examined snippets.
             previous.append(snippet)
-        
+            
+        # If we get here, we are okay - so we examine the next snippet.
         return Actions.SNIPPET
-        
+    
     def __get_previous_judgment(self, previously_seen, snippet):
         """
         Looking through the list of previously examined snippets, returns the judgment for that snippet.
@@ -44,5 +45,5 @@ class SequentialNonrelDecisionMakerSkip(BaseDecisionMaker):
         for previous_snippet in previously_seen:
             if previous_snippet.doc_id == snippet.doc_id:
                 return previous_snippet.judgment
-
+        
         return -1
