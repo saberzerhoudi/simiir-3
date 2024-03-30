@@ -1,5 +1,5 @@
 from random import Random
-from simiir.user_serp_impressions.base_serp_impression import BaseSERPImpression
+from simiir.user.serp_impressions.base import BaseSERPImpression
 
 class StochasticSERPImpression(BaseSERPImpression):
     """

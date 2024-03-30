@@ -10,7 +10,7 @@ class SimulatedUser(object):
     """
     def __init__(self, configuration):
         self.__user_context = configuration.user.user_context
-        self.__decision_maker = configuration.user.decision_maker
+        self.__result_stopping_decision_maker = configuration.user.decision_maker
         self.__output_controller = configuration.output
         self.__logger = configuration.user.logger
         self.__document_classifier = configuration.user.document_classifier
@@ -245,4 +245,4 @@ class SimulatedUser(object):
             self.__output_controller.log_info(info_type="SERP_END_REACHED")
             return Actions.QUERY
         
-        return self.__decision_maker.decide()
+        return self.__result_stopping_decision_maker.decide()

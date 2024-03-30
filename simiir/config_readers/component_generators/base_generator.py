@@ -82,9 +82,9 @@ class BaseComponentGenerator(object):
         """
         modules = []
         classes = []
-        
+        package_dir = package.replace('.','/')
         # List through the modules in the specified package, ignoring __init__.py, and append them to a list.
-        for f in os.listdir(package):
+        for f in os.listdir(package_dir):
             if f.endswith('.py') and not f.startswith('__init__'):
                 modules.append('{0}.{1}'.format(package, os.path.splitext(f)[0]))
         

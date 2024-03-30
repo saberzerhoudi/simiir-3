@@ -1,7 +1,7 @@
 import abc
 import numpy
 from simiir.search_interfaces import Document
-from simiir.user_serp_impressions import PatchTypes
+from simiir.user.serp_impressions import PatchTypes
 from simiir.utils.data_handlers import get_data_handler
 
 class BaseSERPImpression(object):
@@ -61,41 +61,6 @@ class BaseSERPImpression(object):
         
         return PatchTypes.GRADUAL_INCREASE
         
-        # # Old code.
-        # # Used DCG and area under curves. The code above is more straightforward.
-        # def calculate_maximum_area(snippet_judgements_length):
-        #     """
-        #     Given a length parameter, returns the maximum area under the curve if all documents up to
-        #     length snippet_judgements_length are judged to be relevant.
-        #     """
-        #     perfect_judgements = [1] * snippet_judgements_length
-        #     cumulative_perfect_judgements = numpy.cumsum(perfect_judgements)
-        #     return float(numpy.trapz(cumulative_perfect_judgements, dx=snippet_judgements_length))
-        #
-        #
-        # if snippet_judgements is None or len(snippet_judgements) == 1:
-        #     return PatchTypes.UNDEFINED
-        #
-        # no_snippets = len(snippet_judgements)
-        #
-        # # Calculate the DCG at each rank, with the DCG threshold specified.
-        # dcg_values = []
-        #
-        # for i in range(0, len(snippet_judgements)):
-        #     dcg = snippet_judgements[i] * (1.0/(i+1)**self.dcg_discount)
-        #     dcg_values.append(dcg)
-        #
-        # cumulative = numpy.cumsum(dcg_values)
-        # area = numpy.trapz(cumulative, dx=no_snippets)
-        #
-        # # Produce a ratio, comparing the area calculated above vs. the area under the "perfect" curve.
-        # area_normalised = area / calculate_maximum_area(no_snippets)
-        #
-        # if area_normalised >= self.patch_type_threshold:
-        #     return PatchTypes.EARLY_GAIN
-        #
-        # return PatchTypes.GRADUAL_INCREASE
-    
     
     def _get_patch_judgements(self):
         """
