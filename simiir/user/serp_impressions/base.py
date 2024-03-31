@@ -1,6 +1,6 @@
 import abc
 import numpy
-from simiir.search_interfaces import Document
+from simiir.search.interfaces import Document
 from simiir.user.serp_impressions import PatchTypes
 from simiir.utils.data_handlers import get_data_handler
 

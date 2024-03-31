@@ -4,7 +4,7 @@ import gc
 import logging
 from progress_indicator import ProgressIndicator
 
-from users.search_user import SimulatedUser
+from sims.search_user import SimulatedUser
 from config_readers.simulation_config_reader import SimulationConfigReader
 
 

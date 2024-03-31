@@ -1,5 +1,4 @@
 import os
-#from user_context import UserContext
 from config_readers.component_generators.base_generator import BaseComponentGenerator
 
 class UserComponentGenerator(BaseComponentGenerator):

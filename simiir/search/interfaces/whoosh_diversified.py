@@ -7,7 +7,7 @@
 #
 
 import copy
-from simiir.search_interfaces.whoosh_interface import WhooshSearchInterface
+from simiir.search.interfaces.whoosh import WhooshSearchInterface
 from ifind.seeker.trec_diversity_qrel_handler import EntityQrelHandler
 
 class WhooshDiversifiedInterface(WhooshSearchInterface):

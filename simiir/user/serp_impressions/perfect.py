@@ -1,4 +1,4 @@
-from simiir.search_interfaces import Document
+from simiir.search.interfaces import Document
 from simiir.user.serp_impressions.base import BaseSERPImpression
 
 class PerfectSERPImpression(BaseSERPImpression):

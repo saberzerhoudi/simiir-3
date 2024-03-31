@@ -2,7 +2,7 @@ import os
 import abc
 from simiir.user.loggers import Actions
 from ifind.search.query import Query
-from simiir.search_interfaces import Document
+from simiir.search.interfaces import Document
 import logging
 
 log = logging.getLogger('user_context.user_context')

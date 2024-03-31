@@ -1,12 +1,12 @@
 import os
 from whoosh.index import open_dir
-from simiir.search_interfaces import Document
+from simiir.search.interfaces import Document
 from ifind.search.cache import RedisConn
 from ifind.search.engines.whooshtrec import Whooshtrec
-from simiir.search_interfaces.base_interface import BaseSearchInterface
+from simiir.search.interfaces.base import BaseSearchInterface
 import logging
 
-log = logging.getLogger('simuser.search_interfaces.whoosh_interface')
+log = logging.getLogger('simuser.search.interfaces.whoosh_interface')
 
 
 class WhooshSearchInterface(BaseSearchInterface):

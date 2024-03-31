@@ -1,5 +1,5 @@
 import os
-from search_interfaces import Topic
+from simiir.search.interfaces import Topic
 from output_controller import OutputController
 from config_readers.user_config_reader import UserConfigReader
 from config_readers.component_generators.base_generator import BaseComponentGenerator
@@ -26,7 +26,7 @@ class SimulationComponentGenerator(BaseComponentGenerator):
         
         # Generate the search interface to be used.
         self.search_interface = self._get_object_reference(config_details=self._config_dict['searchInterface'],
-                                                           package='search_interfaces')
+                                                           package='search.interfaces')
         
         # Create the user object - by loading the specified file into a UserConfigReader, then obtaining its components.
         user_config_file = self._config_dict['user']['@configurationFile']
