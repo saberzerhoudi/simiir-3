@@ -1,5 +1,5 @@
 __author__ = 'leif'
-from user_result_classifiers.base_classifier import BaseTextClassifier
+from simiir.user.result_classifiers.base import BaseTextClassifier
 import logging
 
 log = logging.getLogger('trec_classifer.TrecTextClassifier')

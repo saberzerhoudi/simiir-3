@@ -3,7 +3,7 @@ __author__ = 'leif'
 
 import abc
 from random import Random
-from simiir.user_result_classifiers.base_informed_trec_classifier import BaseInformedTrecTextClassifier
+from simiir.user.result_classifiers.base_informed_trec import BaseInformedTrecTextClassifier
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
 
 class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):

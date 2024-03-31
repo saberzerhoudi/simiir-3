@@ -30,13 +30,13 @@ class UserComponentGenerator(BaseComponentGenerator):
         
         # Create the user's snippet classifier.
         self.snippet_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['snippetClassifier'],
-                                                             package='user_result_classifiers',
+                                                             package='user.result_classifiers',
                                                              components=[('topic', self.__simulation_components.topic),
                                                                          ('user_context', self.user_context)])
         
         # Create the uer's document classifier.
         self.document_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['documentClassifier'],
-                                                              package='user_result_classifiers',
+                                                              package='user.result_classifiers',
                                                               components=[('topic', self.__simulation_components.topic),
                                                                           ('user_context', self.user_context)])
         

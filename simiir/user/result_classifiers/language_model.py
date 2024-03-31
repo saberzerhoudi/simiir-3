@@ -2,7 +2,7 @@ __author__ = 'leif'
 import math
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
-from simiir.user_result_classifiers.base_classifier import BaseTextClassifier
+from simiir.user.result_classifiers.base import BaseTextClassifier
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
 from simiir.utils.tidy import clean_html
 from simiir.utils.lm_methods import extract_term_dict_from_text

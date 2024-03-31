@@ -1,7 +1,7 @@
 __author__ = 'david'
 
 from ifind.common.language_model import LanguageModel
-from simiir.user_result_classifiers.lm_classifier import LMTextClassifier
+from simiir.user.result_classifiers.language_model import LMTextClassifier
 from simiir.utils.lm_methods import extract_term_dict_from_text
 import logging
 

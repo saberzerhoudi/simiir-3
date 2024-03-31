@@ -2,7 +2,7 @@ import math
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
-from simiir.user_result_classifiers.base_classifier import BaseTextClassifier
+from simiir.user.result_classifiers.base import BaseTextClassifier
 import logging
 
 log = logging.getLogger('ifind_classifer.IFindTextClassifier')

@@ -1,7 +1,7 @@
 __author__ = 'david'
 
 import abc
-from simiir.user_result_classifiers.base_classifier import BaseTextClassifier
+from simiir.user.result_classifiers.base import BaseTextClassifier
 from simiir.utils.data_handlers import get_data_handler
 from random import random
 import logging

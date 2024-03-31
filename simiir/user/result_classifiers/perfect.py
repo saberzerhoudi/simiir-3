@@ -1,5 +1,5 @@
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
-from simiir.user_result_classifiers.stochastic_informed_trec_classifier import StochasticInformedTrecTextClassifier
+from simiir.user.result_classifiers.stochastic_informed_trec import StochasticInformedTrecTextClassifier
 
 class PerfectTrecTextClassifier(StochasticInformedTrecTextClassifier):
     """

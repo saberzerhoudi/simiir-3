@@ -1,7 +1,7 @@
 __author__ = 'leif'
 
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
-from simiir.user_result_classifiers.base_informed_trec_classifier import BaseInformedTrecTextClassifier
+from simiir.user.result_classifiers.base_informed_trec import BaseInformedTrecTextClassifier
 
 import logging
 
