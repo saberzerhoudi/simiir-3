@@ -2,10 +2,10 @@ import os
 import sys
 import gc
 import logging
-from progress_indicator import ProgressIndicator
+from utils.progress_indicator import ProgressIndicator
 
 from sims.search_user import SimulatedUser
-from config_readers.simulation_config_reader import SimulationConfigReader
+from utils.config_readers.simulation_config_reader import SimulationConfigReader
 
 
 def main(config_filename):

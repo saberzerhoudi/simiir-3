@@ -1,5 +1,5 @@
 import os
-from config_readers.component_generators.base_generator import BaseComponentGenerator
+from simiir.utils.config_readers.component_generators.base_generator import BaseComponentGenerator
 
 class UserComponentGenerator(BaseComponentGenerator):
     """

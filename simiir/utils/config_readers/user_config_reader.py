@@ -1,6 +1,6 @@
-from simiir.config_readers.base_config_reader import BaseConfigReader
-from simiir.config_readers import empty_string_check, check_attributes
-from simiir.config_readers.component_generators.user_generator import UserComponentGenerator
+from simiir.utils.config_readers.base_config_reader import BaseConfigReader
+from simiir.utils.config_readers import empty_string_check, check_attributes
+from simiir.utils.config_readers.component_generators.user_generator import UserComponentGenerator
 
 class UserConfigReader(BaseConfigReader):
     """

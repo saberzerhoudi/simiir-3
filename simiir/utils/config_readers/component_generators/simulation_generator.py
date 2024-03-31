@@ -1,8 +1,8 @@
 import os
 from simiir.search.interfaces import Topic
-from output_controller import OutputController
-from config_readers.user_config_reader import UserConfigReader
-from config_readers.component_generators.base_generator import BaseComponentGenerator
+from simiir.utils.output_controller import OutputController
+from simiir.utils.config_readers.user_config_reader import UserConfigReader
+from simiir.utils.config_readers.component_generators.base_generator import BaseComponentGenerator
 
 class SimulationComponentGenerator(BaseComponentGenerator):
     """

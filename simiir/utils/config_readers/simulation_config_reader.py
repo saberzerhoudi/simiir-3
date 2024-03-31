@@ -1,7 +1,7 @@
 from itertools import product
-from simiir.config_readers import ConfigReaderError
-from simiir.config_readers.base_config_reader import BaseConfigReader
-from simiir.config_readers import parse_boolean, empty_string_check, filesystem_exists_check, check_attributes
+from simiir.utils.config_readers import ConfigReaderError
+from simiir.utils.config_readers.base_config_reader import BaseConfigReader
+from simiir.utils.config_readers import parse_boolean, empty_string_check, filesystem_exists_check, check_attributes
 
 class SimulationConfigReader(BaseConfigReader):
     """
@@ -55,7 +55,7 @@ class SimulationConfigReader(BaseConfigReader):
         components = {}
         configuration_set = get_next_configuration()
         
-        from simiir.config_readers.component_generators.simulation_generator import SimulationComponentGenerator
+        from simiir.utils.config_readers.component_generators.simulation_generator import SimulationComponentGenerator
         bg = SimulationComponentGenerator(self._config_dict['@id'], configuration_set)
         
         #print bg
