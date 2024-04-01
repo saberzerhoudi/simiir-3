@@ -73,8 +73,10 @@ class Terrier(Engine):
     
     def _request(self, query):
         response = None
+        pagelen = query.top
         if self.__engine:
             response = self.__engine.transform(query.terms)
+            response = response.sort_values('score', ascending=False).head(pagelen)
             if self.__reader:
                 response['text'] = response['docno'].apply(lambda x: self.__reader.getDocument('docno', x))
             response = self._parse_terrier_response(response)
