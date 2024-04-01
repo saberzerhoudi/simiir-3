@@ -121,6 +121,7 @@ class PyterrierReRankerInterface(PyTerrierInterface):
             from pyterrier_dr import HgfBiEncoder
             model = HgfBiEncoder.from_pretrained(model_or_path, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
         else: model = model_or_path
+        assert issubclass(pt.Transformer, model), "Model must be a PyTerrier object"
         self.__engine = self.__engine % rerank_depth >> pt.text.get_text(self.__index, index_text_field) >> model
 
     @classmethod
