@@ -1,9 +1,47 @@
 # SimIIR 3
 
-SimIIR 3 extends the Python-based SimIIR framework for simulating interactive information retrieval (IIR) that was originally released by Leif Azzopardi and David Maxwell [https://github.com/leifos/simiir] and extended by Zerhoudi et al. [https://github.com/padas-lab-de/simiir-2]. 
+SimIIR 3 is based on the Python-based SimIIR framework for simulating interactive information retrieval (IIR) that was originally released by Leif Azzopardi and David Maxwell [https://github.com/leifos/simiir] and extended by Zerhoudi et al. [https://github.com/padas-lab-de/simiir-2]. 
+
+The class and package structure of SimIIR 3 has been significantly revised -- and means that SimIIR 3 is not backwards compatiable with the previous version (directly). However, any additional components can be easily ported to the SimIIR 3. 
+
+The reason for updated the packages was to create a cleaner and clearer separation between the different core components within the framework and to enable the development of new simulations (e.g. conversational simulations).
 
 
 ## Framework Architecture
+
+- sims: contains the components for constructing simulations given a configuration, and a flow chart based model of how a simulated user interacts with the search system.
+    - search_user:
+        - `SimulatedUser`: simulates the complex searcher model workflow
+        - Users to be added TODO(@zaber):`MarkovSearchSimulatedUser` and TODO(@leifos):`ConversationalSearchSimulatedUser` 
+- user: contains the components for building a simulated user.
+    - contexts: 
+        - `Memory`: provides a container for storing what actions, etc the user performed during their interaction with the search system. It represents their internal state, knowledge of the world, etc. 
+    - loggers:
+        - `Action`: the current set of actions: 'QUERY', 'SERP', 'SNIPPET', 'DOC', 'MARK'
+        - `BaseLogger`, `FixedCostLogger`, etc: provider a mechanism for logging user actions, recording their costs, and goals, and checking whether the user is finished. 
+    - query_generators:
+        - `BaseQueryGenerator` has two abstract methods: (1) generate queries, and (2) select next query. For example:
+        - `PredeterminedQueryGenerator` takes a list of pre-defined queries read in from file.     
+        - `SingleTermQueryGenerator` generates a list of single term queries given the `Topic`.
+        - `TrecTopicQueryGenerator` generates a list contain one query, the title of the trec `Topic`.
+        -  and many more. 
+    - result_classifiers:
+        - `BaseTextClassifier` has one asbtract method: (1) is_relevant() which decides if a `Document` is relevant or not to the users information need `Topic`, given their context `Memory`. For example,
+        - `PerfectTrecTextClassifier` has knowledge of what is relevant and what is not, given TREC qrels, and returns the perfect decision.
+        - `StochasticInformedTrecTextClassifier` has knowledge of what is relevant and what is not, given TREC qrels, but returns an imperfect decision based on the probability of a user judging the document relevant given its relevance label.
+        - and many more.
+    - result_stopping_decider:
+        - `BaseDecisionMaker` has one abstract method to implement `decide()` which returns an `Action` so could be used for any decision within the workflow of a simulated user -- but currently we are using this for making stopping decisions given a users interaction with a list of results. For example:
+        - `TotalNonrelDecisionMaker` it will decide to go look at the next snippet, if the number of non relevant items seen has not been exceed, otherwise it will query.
+        - `RBPDecisionMaker` it will decide to look at the next snippet with probability rho, otherwise it will query.
+        - and many more.
+
+    - serp_impressions:
+        - `BaseSERPImpression` has one abstract method to implement `is_serp_attractive()` which returns True if the user thinks the serp is attractive enough to examine, otherwise, False.
+        - `StochasticSERPImpression` returns True given some probability of continuing if the patch is good or poor, else False.
+        - and more.
+
+
 
 ![The architecture of our extended SimIIR framework, with the components split across both simulation and user categories. Simulation components define the simulation — a representation of some real‐world user study, with user components defining the behavior of simulated users.](https://github.com/padre-lab-eu/extended-simiir/blob/main/simiir2.png)
 
@@ -104,6 +142,17 @@ So far, one search interface is specified which connects to a Whoosh-based index
 
 
 
+## Contributing to the Framework
+Steps for contributing to the framework:
+
+0. Inform the ACM SIGIR #simiir group channel, that you are wanting / proposing a change. Get feedbacks.
+1. Raise an issue for the minimum viable addition/change. (i.e., new stopping strategy, or new query generator)
+2. Make a branch from main.
+3. Follow the naming conventions, etc., and make your changes.
+4. Test your changes to ensure that the existing simulations works, and that your proposed change works.
+5. Add a simulated user and simuluation that uses your simulated user with your change/extension, that works on the example index.
+6. If your change is based on publised work, add your reference to `references.bib`.
+7. Make a pull request, and inform the ACM SIGIR #simiir group.
 
 
 

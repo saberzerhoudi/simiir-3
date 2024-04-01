@@ -32,19 +32,19 @@ class BaseLogger(object):
     
     @abc.abstractmethod
     def get_last_query_time(self):
-        return 0
+        return 1
     
     @abc.abstractmethod
     def get_last_interaction_time(self):
-        return 0
+        return 1
     
     @abc.abstractmethod
     def get_last_marked_time(self):
-        return 0
+        return 1
     
     @abc.abstractmethod
     def get_last_relevant_snippet_time(self):
-        return 0
+        return 1
     
     @abc.abstractmethod
     def get_progress(self):
