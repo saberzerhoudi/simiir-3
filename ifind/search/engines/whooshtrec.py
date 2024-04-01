@@ -254,10 +254,7 @@ class Whooshtrec(Engine):
 
             summary = result.highlights(field,top=snippet_size)
             content = result[field]
-
-            trecid = result["docid"]
-            trecid = trecid.strip()
-
+            trecid = str(result["docid"].strip())
             source = result["source"]
 
             response.add_result(title=title,

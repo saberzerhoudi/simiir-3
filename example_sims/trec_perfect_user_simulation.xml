@@ -16,6 +16,7 @@
 
 	<users>
                 <user configurationFile="../example_sims/users/perfect_trec_user.xml" />
+                <user configurationFile="../example_sims/users/perfect_smart_user.xml" />
 	</users>
 
 	<searchInterface class="WhooshSearchInterface">
