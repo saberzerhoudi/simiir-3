@@ -14,12 +14,11 @@ class Terrier(Engine):
                  properties : dict = None,
                  memory : bool = False,
                  **kwargs):
-        
         Engine.__init__(self, **kwargs)
         import pyterrier as pt
         if not pt.started():
             pt.init()
-        self.index_ref = index_ref
+        self.index_ref = str(index_ref)
         try:
             self.__index = pt.IndexFactory.of(index_ref, memory=memory)
         except Exception as e:
@@ -51,21 +50,21 @@ class Terrier(Engine):
     @staticmethod
     def _parse_terrier_response(response):
         output = Response(response.query.iloc[0])
-
         for i in range(len(response)):
             row = response.iloc[i]
-            rank = row.rank + 1
-            docid = row.docno 
-            source = "Terrier"
             title = getattr(row, 'title', "Untitled")
             url = getattr(row, 'url', row.docno)
             content = getattr(row, 'text', None) 
+            rank = row.rank + 1
+            docid = row.docno 
+            score = row.score
+            source = row.source
             response.add_result(title=title, 
                                 url=url, 
                                 content=content,
                                 rank=rank, 
                                 docid=docid, 
-                                score = row.score,
+                                score=score,
                                 source=source)
         
         output.result_total = len(response)
@@ -77,6 +76,7 @@ class Terrier(Engine):
         if self.__engine:
             response = self.__engine.transform(query.terms)
             response = response.sort_values('score', ascending=False).head(pagelen)
+            response['source'] = self.index_ref
             if self.__reader:
                 response['text'] = response['docno'].apply(lambda x: self.__reader.getDocument('docno', x))
             response = self._parse_terrier_response(response)
