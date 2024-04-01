@@ -1,4 +1,5 @@
 from simiir.search.interfaces.base import BaseSearchInterface
+from simiir.search.interfaces import Document
 import logging
 
 log = logging.getLogger('simuser.search.interfaces.pyterrier')
@@ -64,7 +65,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
     def issue_query(self, query, top=100):
         assert self.__engine is not None, "No engine defined"
         response = self.__engine.search(query)
-        response = [*response.groupby('qid').head(top).rename(columns={'qid':'query_id', 'docid':'document_id', 'score':'score'})['query_id', 'document_id', 'score', 'rank'].itertuples(index=False)]
+        response = [*response.groupby('qid').head(top).rename(columns={'qid':'query_id', 'score':'score'})['query_id', 'docid', 'score', 'rank'].itertuples(index=False)]
     
         self._last_query = query
         self._last_response = response
@@ -72,4 +73,5 @@ class PyTerrierSearchInterface(BaseSearchInterface):
 
     def get_document(self, document_id):
         assert self.__reader is not None, "No reader defined"
-        return self.__reader.getDocument("docno", document_id)
+        content =  self.__reader.getDocument("docno", document_id)
+        return Document(id=document_id, content=content, doc_id=document_id)
