@@ -77,7 +77,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
     def issue_query(self, query, top=100):
         assert self.__engine is not None, "No engine defined"
         response = self.__engine.search(query)
-        response = [*response.groupby('qid').head(top)['qid', 'docid', 'score', 'rank'].itertuples(index=False)]
+        response = [*response.groupby('qid').head(top).rename(columns={'docno' : 'docid'})['qid', 'docid', 'score', 'rank'].itertuples(index=False)]
     
         self._last_query = query
         self._last_response = response
