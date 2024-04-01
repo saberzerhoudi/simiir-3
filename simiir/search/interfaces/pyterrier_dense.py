@@ -1,5 +1,8 @@
 from simiir.search.interfaces.pyterrier import PyTerrierInterface
 from typing import Union, Any
+import logging
+
+log = logging.getLogger('simuser.search.interfaces.pyterrier')
 
 class PyTerrierDenseInterface(PyTerrierInterface):
     """
@@ -95,7 +98,7 @@ class PyterrierReRankerInterface(PyTerrierInterface):
         Depth to re-rank to
     """
     def __init__(self, 
-                 model_name_or_path : str, 
+                 model_or_path : Union[str, Any], 
                  meta_index : str, 
                  wmodel : str = 'BM25',
                  controls : dict = None,
@@ -112,14 +115,17 @@ class PyterrierReRankerInterface(PyTerrierInterface):
         import pyterrier as pt
         if not pt.started():
             pt.init()
-        from pyterrier_dr import HgfBiEncoder
 
-        model = HgfBiEncoder.from_pretrained(model_name_or_path, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
+        if isinstance(model_or_path, str):
+            log.warning("This class assumes the huggingface model is a Bi-Encoder style encoder, if not, this will fail")
+            from pyterrier_dr import HgfBiEncoder
+            model = HgfBiEncoder.from_pretrained(model_or_path, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
+        else: model = model_or_path
         self.__engine = self.__engine % rerank_depth >> pt.text.get_text(self.__index, index_text_field) >> model
 
     @classmethod
     def from_dataset(cls, 
-                     model_name_or_path : str, 
+                     model_or_path : Union[str, Any], 
                      dataset : str, 
                      variant : str = 'terrier_stemmed_text', 
                      wmodel : str = 'BM25',
