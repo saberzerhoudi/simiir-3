@@ -4,7 +4,7 @@ import logging
 log = logging.getLogger('simuser.search.interfaces.pyterrier')
 
 class PyTerrierSearchInterface(BaseSearchInterface):
-    '''
+    """
     Interface for using PyTerrier for BatchRetrieval or Meta Index access
 
     Parameters:
@@ -20,7 +20,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
         Field in the index to use as the text field
     memory : bool
         Whether to load the index into memory
-    '''
+    """
     def __init__(self, 
                  index_or_dir : str, 
                  wmodel : str = None, 
@@ -64,7 +64,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
     def issue_query(self, query, top=100):
         assert self.__engine is not None, "No engine defined"
         response = self.__engine.search(query)
-        response = [*response.groupby('qid').head(top).rename(columns={'qid':'query_id', 'docid':'document_id', 'score':'document_score'})['query_id', 'document_id', 'score', 'rank'].itertuples(index=False)]
+        response = [*response.groupby('qid').head(top).rename(columns={'qid':'query_id', 'docid':'document_id', 'score':'score'})['query_id', 'document_id', 'score', 'rank'].itertuples(index=False)]
     
         self._last_query = query
         self._last_response = response

@@ -2,7 +2,7 @@ from simiir.search.interfaces.pyterrier import PyTerrierInterface
 from typing import Union, Any
 
 class PyTerrierDenseInterface(PyTerrierInterface):
-    '''
+    """
     Interface for using a Dense Retrieval model with PyTerrier
 
     Parameters:
@@ -24,7 +24,7 @@ class PyTerrierDenseInterface(PyTerrierInterface):
         Whether to output verbose logging
     device : None
         Device to use for the model
-    '''
+    """
     def __init__(self, 
                  index_or_dir : Union[str, Any], 
                  model_name_or_path : str, 
@@ -65,7 +65,7 @@ class PyTerrierDenseInterface(PyTerrierInterface):
         return cls(index_or_dir, model_name_or_path, meta_index_ref, index_text_field=meta_index_text_field, memory=memory, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
 
 class PyterrierReRankerInterface(PyTerrierInterface):
-    '''
+    """
     Interface for using a Dense Retrieval model with PyTerrier for re-ranking
 
     Parameters:
@@ -93,7 +93,7 @@ class PyterrierReRankerInterface(PyTerrierInterface):
         Device to use for the model
     rerank_depth : int
         Depth to re-rank to
-    '''
+    """
     def __init__(self, 
                  model_name_or_path : str, 
                  meta_index : str, 
