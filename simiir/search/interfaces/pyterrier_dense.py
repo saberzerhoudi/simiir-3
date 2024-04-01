@@ -141,7 +141,7 @@ class PyterrierReRankerInterface(PyTerrierInterface):
         if not pt.started():
             pt.init()
         meta_index_ref = pt.get_dataset(dataset).get_index(variant=variant)
-        return cls(model_name_or_path, 
+        return cls(model_or_path, 
                    meta_index_ref, 
                    wmodel=wmodel, 
                    controls=controls, 
