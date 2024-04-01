@@ -135,4 +135,14 @@ class PyterrierReRankerInterface(PyTerrierInterface):
         if not pt.started():
             pt.init()
         meta_index_ref = pt.get_dataset(dataset).get_index(variant=variant)
-        return cls(model_name_or_path, meta_index_ref, wmodel=wmodel, controls=controls, properties=properties, index_text_field=meta_index_text_field, memory=memory, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
+        return cls(model_name_or_path, 
+                   meta_index_ref, 
+                   wmodel=wmodel, 
+                   controls=controls, 
+                   properties=properties, 
+                   index_text_field=meta_index_text_field, 
+                   memory=memory, 
+                   batch_size=batch_size, 
+                   text_field=text_field, 
+                   verbose=verbose, 
+                   device=device)
