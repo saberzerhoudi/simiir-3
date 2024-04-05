@@ -1,23 +1,47 @@
+#Authors: Adam Roegiest and Leif Azzopardi
+#Date:   2024-04-05
+
 from simiir.user.result_classifiers.base import BaseTextClassifier
 from simiir.user.utils.langchain_wrapper import LangChainWrapper
 from simiir.utils.tidy import clean_html
 from langchain_core.prompts import PromptTemplate
 from langchain.output_parsers import PydanticOutputParser
+from langchain_core.output_parsers import JsonOutputParser
+from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 from pydantic import BaseModel, Field
+import cleantext
 
 import logging
 log = logging.getLogger('result_classifier.LangChainTextClassifier')
 
 class SnippetResponse(BaseModel):
-    topic: bool = Field("Is the result about the subject matter in the topic description?\n Answer True if about the topic in the description, else False")
-    relevant: bool = Field("Is it worth clicking on this result to inspect the document?\nAnswer True if it is worth clicking, else False.")
+    """
+    Represents the relevance judgment by an intelligent agent for a result snippet given the topic. relevant must be a boolean value.    
+    """
+    #topic: bool = Field("Is the result about the subject matter in the topic description?\n Answer True if about the topic in the description, else False")
+    #relevant: bool = Field("Is it worth clicking on this result to inspect the document?\nAnswer True if it is worth clicking, else False.")
+    relevant: bool = Field("Is this result relevant to the topic? True or False.")
 
 class DocumentResponse(BaseModel):
-    topic: bool = Field("Is the document about the subject matter in the topic description? Answer True if about the topic in the description, else False.")
-    relevant: bool = Field("Is the document relevant to the topic description? Answer True if relevant, False if not relevant or unknown.")
-    explain: str = Field("Summarize the information from the document that is relevant to the topic description and the criteria. Be specific and succint but mention all relevant entities.")
+    """
+    Represents the relevance judgment by an intelligent agent for a document given the topic. relevant must be boolean value.
+    """
+    #topic: bool = Field("Is the document about the subject matter in the topic description? Answer True if about the topic in the description, else False.")
+    #relevant: bool = Field("Is the document relevant to the topic description? Answer True if relevant, False if not relevant or unknown.")
+    #explain: str = Field("Summarize the information from the document that is relevant to the topic description and the criteria. Be specific and succint but mention all relevant entities.")
+    relevant: bool = Field("Is this document relevant to the topic? True or False.")
 
 result_type_dict = { "SnippetResponse":SnippetResponse, "DocumentResponse":DocumentResponse}
+
+snippet_response_schema = [
+            ResponseSchema(name="relevant", description="Is this result snippet relevant to the topic? True or False.", type="boolean")
+            ]
+
+document_response_schema = [
+            ResponseSchema(name="relevant", description="Is this document relevant to the topic? True or False.", type="boolean")
+            ]
+
+result_schema_dict = { "SnippetResponse":snippet_response_schema, "DocumentResponse":snippet_response_schema}
 
 class LangChainTextClassifier(BaseTextClassifier):
     """
@@ -39,11 +63,16 @@ class LangChainTextClassifier(BaseTextClassifier):
             prompt_template = prompt.read()
         self._template = prompt_template + """\n\n{format_instructions}\n"""
         log.debug(self._template)
-        result_type = result_type_dict[result_type_str]
-        self._output_parser = PydanticOutputParser(pydantic_object=result_type)
+ 
+        #result_type = result_type_dict[result_type_str]
+        #self._output_parser = PydanticOutputParser(pydantic_object=result_type)
+        
+        result_schema = result_schema_dict[result_type_str]
+        
+        self._output_parser = StructuredOutputParser.from_response_schemas(result_schema)
 
         format_instructions = self._output_parser.get_format_instructions()
-        log.debug(format_instructions)
+        log.debug(f'init(): {format_instructions}')
         self._prompt = PromptTemplate(
             template=self._template,
             input_variables=["topic_title", "topic_description", "doc_title", "doc_content"],
@@ -54,13 +83,19 @@ class LangChainTextClassifier(BaseTextClassifier):
     def is_relevant(self, document):
         """
         """
-
         doc_title = " ".join(clean_html(document.title))
         doc_content = " ".join(clean_html(document.content))
         topic_title = self._topic.title
         topic_description  = self._topic.content
 
-        log.debug(self._prompt.format(topic_title=topic_title, topic_description=topic_description, doc_title=doc_title, doc_content=doc_content))    
-        out =self._llm.generate_response(self._output_parser,{ 'topic_title': topic_title, 'topic_description': topic_description, 'doc_title': doc_title, 'doc_content': doc_content })
-        log.debug(out)
-        return out.relevant
+        # remove whitespace and any special characters from doc_content
+        doc_content = cleantext.clean( doc_content)
+        doc_content= "".join(ch for ch in doc_content if ch.isalnum())
+
+
+        log.debug('is_relevant(before): ' + self._prompt.format(topic_title=topic_title, topic_description=topic_description, doc_title=doc_title, doc_content=doc_content))    
+        out = self._llm.generate_response(self._output_parser,{ 'topic_title': topic_title, 'topic_description': topic_description, 'doc_title': doc_title, 'doc_content': doc_content })
+        log.debug(f'is_relevant(after): {out}')
+        #print(out['relevant'])
+
+        return out['relevant']

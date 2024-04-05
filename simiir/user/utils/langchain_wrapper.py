@@ -1,3 +1,5 @@
+#Authors: Adam Roegiest and Leif Azzopardi
+#Date:   2024-04-05
 from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama, ChatAnthropic, ChatVertexAI, ChatCohere
 from langchain_core.prompts import PromptTemplate
@@ -31,38 +33,60 @@ class LangChainWrapper(object):
       self._prompt = prompt
       self._chain = self._prompt | self._llm
 
-   @retry(wait=wait_exponential(multiplier=1,min=1,max=5),stop=stop_after_attempt(10))
-   def generate_response(self,output_parser,params):
+   @retry(wait=wait_exponential(multiplier=1,min=1,max=5), stop=stop_after_attempt(10))
+   def generate_response(self, output_parser, params):
       """
       Generates a response with a retry mechanism that checks for the correct types and retries with
       attempts at guidance but this is fairly flakey depending on the exact model. 
       """
+      def do_retry():
+         new_prompt = """The provided response for the following request did not produce the a valid JSON response:
+         ---BEGIN REQUEST---
+         {0}
+         ---END REQUEST---
+         
+         ---BEGIN RESPONSE---
+         {1}
+         ---END RESPONSE---
+         Update the response to meet the formatting instructions.""".format(self._prompt.template, out)
+         new_template = PromptTemplate(
+            template=new_prompt,
+            input_variables=self._prompt.input_variables,
+            partial_variables=self._prompt.partial_variables,
+         )
+         log.debug("generate_response(): do_retry(): new_template: {0}".format(new_template))
+         chain = new_template | self._llm | output_parser
+         out = chain.invoke(params)  
+         log.debug("generate_response(): do_retry(): retried output: {0}".format(out))
+         return out
+
       full_chain = self._chain | output_parser
       valid = False
       out = full_chain.invoke(params)
-      log.debug("Initial output: {0}".format(out))
-      fields = out.__fields__
-      while not valid:
-         valid = True
-         for attr in fields:
-            if not hasattr(out,attr) or fields[attr].annotation != type(getattr(out,attr)):
-               new_prompt = """The provided response for the following request did not produce the a valid JSON response:
-               ---BEGIN REQUEST---
-               {0}
-               ---END REQUEST---
-               
-               The response was: {1}
-               
-               Retry formatting the response so that it does repeat default values from the instructions and respond only with valid JSON.""".format(self._prompt.template,out)
-               new_template = PromptTemplate(
-                  template=new_prompt,
-                  input_variables=self._prompt.input_variables,
-                  partial_variables=self._prompt.partial_variables,
-               )
-               chain = new_template | self._llm | output_parser
-               out = chain.invoke(params)  
-               log.debug("Retried output: {0}".format(out))
-               valid = False
-               break
+      log.debug("generate_response(): initial output: {0}".format(out))
+
+      if 'relevant' not in out:
+         out = do_retry()
+      
+      if 'relevant' not in out:
+         raise Exception("generate_response(): No valid output after retrying")
+      
+      log.debug("generate_response(): relevance judgement: {0}".format(out['relevant']))
+   
       return out
+
+      #fields = out.__fields__
+      #   valid = True
+      ##while not valid:
+      #      if not hasattr(out,attr) or fields[attr].annotation != type(getattr(out,attr)):
+      #   for attr in fields:
+      #         do_retry()
+      #         valid = False
+      #         break
+      #   if out is None or type(out) == NoneType:
+      #      do_retry()
+      #      valid = False
+      #      break
+
+      #return out
 
