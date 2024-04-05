@@ -13,6 +13,8 @@
 		<documentClassifier class="LangChainTextClassifier">
 	        <attribute name="prompt_file" type="string" value="../example_data/prompts/default_document.txt" is_argument="true" />
 			<attribute name="result_type_str" type="string" value="DocumentResponse" is_argument="true" />
+			<attribute name="provider" type="string" value="ollama" is_argument="true" />
+			<attribute name="model" type="string" value="llama2" is_argument="true" />
 		</documentClassifier>
 	</textClassifiers>
 

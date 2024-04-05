@@ -9,8 +9,8 @@ import logging
 log = logging.getLogger('result_classifier.LangChainTextClassifier')
 
 class SnippetResponse(BaseModel):
-    topic: bool = Field("Is the result about the subject matter in the topic description? Answer True if about the topic in the description, else False")
-    click: bool = Field("Is it worth clicking on this result to inspect the document? Answer True if it is worth clicking, else False.")
+    topic: bool = Field("Is the result about the subject matter in the topic description?\n Answer True if about the topic in the description, else False")
+    relevant: bool = Field("Is it worth clicking on this result to inspect the document?\nAnswer True if it is worth clicking, else False.")
 
 class DocumentResponse(BaseModel):
     topic: bool = Field("Is the document about the subject matter in the topic description? Answer True if about the topic in the description, else False.")
@@ -21,7 +21,12 @@ result_type_dict = { "SnippetResponse":SnippetResponse, "DocumentResponse":Docum
 
 class LangChainTextClassifier(BaseTextClassifier):
     """
+    Represents the use of a LangChain-based LLM as a result classifier.
+    Functions for both documents and snippets by setting an appropriate result-type.
 
+    Prompts have four available variables to be used: the topic title ({topic_title}), the topic
+    description ({topic_description}), the document (or snippet) title ({doc_title}), and 
+    the document (or snippet) contents ({doc_content}).
     """
     def __init__(self, topic, user_context, prompt_file, result_type_str, provider = 'ollama', model = 'mistral', temperature = 0.0, verbose = False):
         """
@@ -58,4 +63,4 @@ class LangChainTextClassifier(BaseTextClassifier):
         log.debug(self._prompt.format(topic_title=topic_title, topic_description=topic_description, doc_title=doc_title, doc_content=doc_content))    
         out =self._llm.generate_response(self._output_parser,{ 'topic_title': topic_title, 'topic_description': topic_description, 'doc_title': doc_title, 'doc_content': doc_content })
         log.debug(out)
-        return out.click
+        return out.relevant

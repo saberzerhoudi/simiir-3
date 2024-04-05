@@ -3,7 +3,8 @@ Topic Description: "{topic_description}"
 
 —BEGIN DOC CONTENT—
 Document Title: "{doc_title}"
-Document Contents: "{doc_content}"
+Document Contents: 
+"{doc_content}"
 -END DOC CONTENT—
 
 Judge whether the document is relevant given the topic desciption.

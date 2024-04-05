@@ -8,6 +8,11 @@ import logging
 log = logging.getLogger('user.utils.LangChainWrapper')
 
 class LangChainWrapper(object):
+   """
+   Provides a convenient wrapper for interacting with LangChain-based LLMs. 
+   In particular, response generation has a built-in retry to attempt to ensure
+   that the outputs are formatted correctly.
+   """
    def __init__(self,prompt,provider="ollama",model="mistral",temperature=0.0,verbose=False):
       provider = provider.lower()
       if provider == 'openai':
@@ -28,6 +33,10 @@ class LangChainWrapper(object):
 
    @retry(wait=wait_exponential(multiplier=1,min=1,max=5),stop=stop_after_attempt(10))
    def generate_response(self,output_parser,params):
+      """
+      Generates a response with a retry mechanism that checks for the correct types and retries with
+      attempts at guidance but this is fairly flakey depending on the exact model. 
+      """
       full_chain = self._chain | output_parser
       valid = False
       out = full_chain.invoke(params)
@@ -37,7 +46,14 @@ class LangChainWrapper(object):
          valid = True
          for attr in fields:
             if not hasattr(out,attr) or fields[attr].annotation != type(getattr(out,attr)):
-               new_prompt = """You did not format your response correctly for the request: \n ```{0}``` \n\nYou responded with {1}. Reformat your response to the requested format.""".format(self._prompt.template,out)
+               new_prompt = """The provided response for the following request did not produce the a valid JSON response:
+               ---BEGIN REQUEST---
+               {0}
+               ---END REQUEST---
+               
+               The response was: {1}
+               
+               Retry formatting the response so that it does repeat default values from the instructions and respond only with valid JSON.""".format(self._prompt.template,out)
                new_template = PromptTemplate(
                   template=new_prompt,
                   input_variables=self._prompt.input_variables,
