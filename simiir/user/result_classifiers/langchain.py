@@ -70,11 +70,6 @@ class LangChainTextClassifier(BaseTextClassifier):
         topic_title = self._topic.title
         topic_description  = self._topic.content
 
-        # remove whitespace and any special characters from doc_content
-        doc_content = cleantext.clean(doc_content)
-        doc_content= "".join(ch for ch in doc_content if ch.isalnum() or ch == ' ')
-
-
         log.debug('is_relevant(before): ' + self._prompt.format(topic_title=topic_title, topic_description=topic_description, doc_title=doc_title, doc_content=doc_content))    
         out = self._llm.generate_response(self._output_parser,{ 'topic_title': topic_title, 'topic_description': topic_description, 'doc_title': doc_title, 'doc_content': doc_content },self._result_schema)
         log.debug(f'is_relevant(after): {out}')
