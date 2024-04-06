@@ -120,12 +120,13 @@ class Memory(object):
         Returns basic statistics held within the search context at the time of calling.
         Ideally, call at the end of the simulation for a complete set of stats.
         """
-        return_string = "    Number of Queries Issued: {0}{1}".format(len(self._issued_queries), os.linesep)
-        return_string = return_string + "    Number of Snippets Examined: {0}{1}".format(len(self._all_snippets_examined), os.linesep)
-        return_string = return_string + "    Number of Documents Examined: {0}{1}".format(len(self._all_documents_examined), os.linesep)
-        return_string = return_string + "    Number of Documents Marked Relevant: {0}{1}".format(len(self._relevant_documents), os.linesep)
-        return_string = return_string + "    Number of Attractive SERPs Examined: {0}{1}".format(self._attractive_serp_count, os.linesep)
-        return_string = return_string + "    Number of Unattractive SERPs Examined: {0}".format(self._unattractive_serp_count)
+        return_string = f"""
+            Number of Queries Issued: {len(self._issued_queries)}
+            Number of Snippets Examined: {len(self._all_snippets_examined)}
+            Number of Documents Examined: {len(self._all_documents_examined)}
+            Number of Documents Marked Relevant: {len(self._relevant_documents)}
+            Number of Attractive SERPs Examined: {self._attractive_serp_count}
+            Number of Unattractive SERPs Examined: {self._unattractive_serp_count}"""
         
         self._output_controller.log_info(info_type="SUMMARY")
         self._output_controller.log_info(info_type="TOTAL_QUERIES_ISSUED", text=len(self._issued_queries))
