@@ -34,7 +34,7 @@ class LangChainWrapper(object):
       self._chain = self._prompt | self._llm
 
    @retry(wait=wait_exponential(multiplier=1,min=1,max=5), stop=stop_after_attempt(10))
-   def generate_response(self, output_parser, params):
+   def generate_response(self, output_parser, params, response_schema):
       """
       Generates a response with a retry mechanism that checks for the correct types and retries with
       attempts at guidance but this is fairly flakey depending on the exact model. 
@@ -59,34 +59,25 @@ class LangChainWrapper(object):
          out = chain.invoke(params)  
          log.debug("generate_response(): do_retry(): retried output: {0}".format(out))
          return out
+      
+      def valid_schema(output,response_schema):
+         type_map = {'boolean' : bool, 'string':str}
+         for response in response_schema:
+            if response.name not in output or type(out[response.name]) != type_map[response.type]:
+               return False
+         return True
 
       full_chain = self._chain | output_parser
-      valid = False
       out = full_chain.invoke(params)
       log.debug("generate_response(): initial output: {0}".format(out))
 
-      if 'relevant' not in out:
+      
+      if not valid_schema(out, response_schema):
          out = do_retry()
       
-      if 'relevant' not in out:
+      if not valid_schema(out, response_schema):
          raise Exception("generate_response(): No valid output after retrying")
       
       log.debug("generate_response(): relevance judgement: {0}".format(out['relevant']))
    
       return out
-
-      #fields = out.__fields__
-      #   valid = True
-      ##while not valid:
-      #      if not hasattr(out,attr) or fields[attr].annotation != type(getattr(out,attr)):
-      #   for attr in fields:
-      #         do_retry()
-      #         valid = False
-      #         break
-      #   if out is None or type(out) == NoneType:
-      #      do_retry()
-      #      valid = False
-      #      break
-
-      #return out
-

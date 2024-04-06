@@ -14,34 +14,19 @@ import cleantext
 import logging
 log = logging.getLogger('result_classifier.LangChainTextClassifier')
 
-class SnippetResponse(BaseModel):
-    """
-    Represents the relevance judgment by an intelligent agent for a result snippet given the topic. relevant must be a boolean value.    
-    """
-    #topic: bool = Field("Is the result about the subject matter in the topic description?\n Answer True if about the topic in the description, else False")
-    #relevant: bool = Field("Is it worth clicking on this result to inspect the document?\nAnswer True if it is worth clicking, else False.")
-    relevant: bool = Field("Is this result relevant to the topic? True or False.")
-
-class DocumentResponse(BaseModel):
-    """
-    Represents the relevance judgment by an intelligent agent for a document given the topic. relevant must be boolean value.
-    """
-    #topic: bool = Field("Is the document about the subject matter in the topic description? Answer True if about the topic in the description, else False.")
-    #relevant: bool = Field("Is the document relevant to the topic description? Answer True if relevant, False if not relevant or unknown.")
-    #explain: str = Field("Summarize the information from the document that is relevant to the topic description and the criteria. Be specific and succint but mention all relevant entities.")
-    relevant: bool = Field("Is this document relevant to the topic? True or False.")
-
-result_type_dict = { "SnippetResponse":SnippetResponse, "DocumentResponse":DocumentResponse}
 
 snippet_response_schema = [
-            ResponseSchema(name="relevant", description="Is this result snippet relevant to the topic? True or False.", type="boolean")
+            ResponseSchema(name="relevant", description="Is this result snippet relevant to the topic? True or False.", type="boolean"),
+            ResponseSchema(name="topic", description="Is this result snippet about the subject matter in the topic description? True or False.", type="boolean")
             ]
 
 document_response_schema = [
-            ResponseSchema(name="relevant", description="Is this document relevant to the topic? True or False.", type="boolean")
+            ResponseSchema(name="relevant", description="Is this document relevant to the topic? True or False.", type="boolean"),
+            ResponseSchema(name="topic", description="Is this document about the subject matter in the topic? True or False.", type="boolean"),
+            ResponseSchema(name="explain", description="Summarize the information from the document that is relevant to the topic description and the criteria. Be specific and succint but mention all relevant entities.")
             ]
 
-result_schema_dict = { "SnippetResponse":snippet_response_schema, "DocumentResponse":snippet_response_schema}
+result_schema_dict = { "SnippetResponse":snippet_response_schema, "DocumentResponse":document_response_schema}
 
 class LangChainTextClassifier(BaseTextClassifier):
     """
@@ -63,13 +48,10 @@ class LangChainTextClassifier(BaseTextClassifier):
             prompt_template = prompt.read()
         self._template = prompt_template + """\n\n{format_instructions}\n"""
         log.debug(self._template)
- 
-        #result_type = result_type_dict[result_type_str]
-        #self._output_parser = PydanticOutputParser(pydantic_object=result_type)
         
-        result_schema = result_schema_dict[result_type_str]
+        self._result_schema = result_schema_dict[result_type_str]
         
-        self._output_parser = StructuredOutputParser.from_response_schemas(result_schema)
+        self._output_parser = StructuredOutputParser.from_response_schemas(self._result_schema)
 
         format_instructions = self._output_parser.get_format_instructions()
         log.debug(f'init(): {format_instructions}')
@@ -89,13 +71,12 @@ class LangChainTextClassifier(BaseTextClassifier):
         topic_description  = self._topic.content
 
         # remove whitespace and any special characters from doc_content
-        doc_content = cleantext.clean( doc_content)
-        doc_content= "".join(ch for ch in doc_content if ch.isalnum())
+        doc_content = cleantext.clean(doc_content)
+        doc_content= "".join(ch for ch in doc_content if ch.isalnum() or ch == ' ')
 
 
         log.debug('is_relevant(before): ' + self._prompt.format(topic_title=topic_title, topic_description=topic_description, doc_title=doc_title, doc_content=doc_content))    
-        out = self._llm.generate_response(self._output_parser,{ 'topic_title': topic_title, 'topic_description': topic_description, 'doc_title': doc_title, 'doc_content': doc_content })
+        out = self._llm.generate_response(self._output_parser,{ 'topic_title': topic_title, 'topic_description': topic_description, 'doc_title': doc_title, 'doc_content': doc_content },self._result_schema)
         log.debug(f'is_relevant(after): {out}')
-        #print(out['relevant'])
 
         return out['relevant']

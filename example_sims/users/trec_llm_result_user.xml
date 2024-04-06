@@ -8,15 +8,14 @@
 		<snippetClassifier class="LangChainTextClassifier">
             <attribute name="prompt_file" type="string" value="../example_data/prompts/default_snippet.txt" is_argument="true" />
 			<attribute name="result_type_str" type="string" value="SnippetResponse" is_argument="true" />
-			<attribute name="provider" type="string" value="openai" is_argument="true" />
-			<attribute name="model" type="string" value="gpt-3.5-turbo" is_argument="true" />
+			<attribute name="temperature" type="float" value="0.5" is_argument="true" />
 		</snippetClassifier>
 
 		<documentClassifier class="LangChainTextClassifier">
 	        <attribute name="prompt_file" type="string" value="../example_data/prompts/default_document.txt" is_argument="true" />
 			<attribute name="result_type_str" type="string" value="DocumentResponse" is_argument="true" />
-			<attribute name="provider" type="string" value="openai" is_argument="true" />
-			<attribute name="model" type="string" value="gpt-3.5-turbo" is_argument="true" />
+			<attribute name="provider" type="string" value="ollama" is_argument="true" />
+			<attribute name="model" type="string" value="llama2" is_argument="true" />
 		</documentClassifier>
 	</textClassifiers>
 
