@@ -1,5 +1,6 @@
 from simiir.user.loggers import Actions
 from simiir.user.loggers.base import BaseLogger
+import progressbar
 
 class FixedCostLogger(BaseLogger):
     """
@@ -36,7 +37,17 @@ class FixedCostLogger(BaseLogger):
         self._last_query_time = 0  # The last time a query was issued, from the start of the session, measured in seconds.
         self._last_marked_time = 0  # The last time a document was marked, from the start of the session, measured in seconds.
         self._last_relevant_snippet_time = 0  # The last time a snippet was considered relevant, from the start of the session (seconds).
-    
+        widgets = [' [',
+         progressbar.Timer(format= 'elapsed time: %(elapsed)s'),
+         '] ',
+           progressbar.Bar('*'),' (',
+           progressbar.ETA(), ') ',
+          ]
+        
+        self._bar = progressbar.ProgressBar(maxval=self._time_limit, widgets=widgets)
+        self._bar.start()
+
+
     def get_last_query_time(self):
         return self._last_query_time
     
@@ -54,6 +65,9 @@ class FixedCostLogger(BaseLogger):
         Concrete implementation of the abstract get_progress() method.
         Returns a value between 0 and 1 representing how far through the current simulation the user is.
         """
+        if self._total_time < self._time_limit:
+            self._bar.update(self._total_time)
+        
         return self._total_time / float(self._time_limit)
     
     def is_finished(self):
@@ -61,6 +75,8 @@ class FixedCostLogger(BaseLogger):
         Concrete implementation of the is_finished() method from the BaseLogger.
         Returns True if the user has reached their search "allowance".
         """
+        if self._total_time < self._time_limit:
+            self._bar.update(self._total_time)
         # Include the super().is_finished() call to determine if there are any queries left to process.
         return (not (self._total_time < self._time_limit)) or super(FixedCostLogger, self).is_finished()
     
