@@ -61,7 +61,7 @@ class LangChainWrapper(object):
          return out
       
       def valid_schema(output,response_schema):
-         type_map = {'boolean' : bool, 'string':str}
+         type_map = {'boolean' : bool, 'string':str, 'list':list}
          for response in response_schema:
             if response.name not in output or type(out[response.name]) != type_map[response.type]:
                return False
@@ -78,6 +78,5 @@ class LangChainWrapper(object):
       if not valid_schema(out, response_schema):
          raise Exception("generate_response(): No valid output after retrying")
       
-      log.debug("generate_response(): relevance judgement: {0}".format(out['relevant']))
    
       return out
