@@ -22,7 +22,8 @@ Date:   2024-04-05
  	</topics>
 
 	<users>
-                <user configurationFile="../example_sims/users/trec_llm_llama2_result_user.xml" />
+                <!-- <user configurationFile="../example_sims/users/trec_llm_llama2_result_user.xml" /> -->
+                <user configurationFile="../example_sims/users/trec_llm_llama2_basic_generator_user.xml" />
 	</users>
 
 	<searchInterface class="WhooshSearchInterface">
