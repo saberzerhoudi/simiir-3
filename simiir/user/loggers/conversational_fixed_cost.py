@@ -40,7 +40,6 @@ class ConversationalFixedCostLogger(BaseLogger):
            progressbar.Bar('*'),' (',
            progressbar.ETA(), ') ',
           ]
-
         self._bar = progressbar.ProgressBar(maxval=self._time_limit, widgets=widgets)
         self._bar.start()
 

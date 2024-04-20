@@ -10,20 +10,6 @@ class BaseLogger(object):
         self._output_controller = output_controller
         self._user_context = user_context
         self._queries_exhausted = False
-        self._stop = False
-        self.action_mapping = {
-            Actions.QUERY  : self._log_query,
-            Actions.SERP   : self._log_serp,
-            Actions.SNIPPET: self._log_snippet,
-            Actions.DOC    : self._log_assess,
-            Actions.MARK   : self._log_mark_document,
-            Actions.UTTERANCE: self._log_utterance,
-            Actions.CSRP   : self._log_csrp,
-            Actions.RESPONSE: self._log_assess_response,
-            Actions.MARKRESPONSE: self._log_mark_response,
-            Actions.START: self._log_start,
-            Actions.STOP: self._log_stop
-        }
     
     def log_action(self, action_name, **kwargs):
         """
@@ -36,6 +22,7 @@ class BaseLogger(object):
         else:
             self.__log_unknown_action(action_name)
     
+    @abc.abstractmethod
     def get_last_query_time(self):
         return 1
     
@@ -56,11 +43,7 @@ class BaseLogger(object):
         """
         return None
     
-    def start_logging(self):
-        self._log_start()
-        self._stop = False
-    
-    
+    @abc.abstractmethod
     def is_finished(self):
         """
         Abstract method, only returns indication as to whether the list of queries has been exhausted.
@@ -119,41 +102,13 @@ class BaseLogger(object):
         """
         pass
 
-    def _log_utterance(self, **kwargs):
-        """
-        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of utterance.
-        Returns None.
-        """
-        pass
-
-    def _log_csrp(self, **kwargs):
-        """
-        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of examining a CSRP.
-        Returns None.
-        """
-        pass
-
-    def _log_assess_response(self, **kwargs):
-        """
-        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of assessing a response.
-        Returns None.
-        """
-        pass
-
-    def _log_mark_response(self, **kwargs):
-        """
-        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of marking a response.
-        Returns None.
-        """
-        pass
-
-    def _log_stop(self, **kwargs):
-        self._stop = True
-        self._report(Actions.STOP, **kwargs)
-
-    def _log_start(self, **kwargs):
-        self._stop = False
-        self._report(Actions.START, **kwargs)
+    #@abc.abstractmethod
+    #def _log_utterance(self, **kwargs):
+    #    """
+    #    Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of utterance.
+    #    Returns None.
+    #    """
+    #    pass
     
-    def __log_unknown_action(self, **kwargs):
-        self._report(Actions.UNKNOWN, **kwargs)
+    def __log_unknown_action(self):
+        self._report('UNKNOWN ACTION')
