@@ -137,5 +137,9 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         return None
     
     def _after_none(self):
+<<<<<<< HEAD
         self._do_action(Actions.UTTERANCE)
+=======
+        return Actions.UTTERANCE
+>>>>>>> 1f3393c (Almost working)
     
