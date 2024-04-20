@@ -20,7 +20,7 @@ class BaseLogger(object):
             Actions.UTTERANCE: self._log_utterance,
             Actions.CSRP   : self._log_csrp,
             Actions.RESPONSE: self._log_assess_response,
-            Actions.MARK_RESPONSE: self._log_mark_response,
+            Actions.MARKRESPONSE: self._log_mark_response,
             Actions.STOP: self._log_stop
         }
     
