@@ -50,17 +50,11 @@ class ConversationUserComponentGenerator(BaseComponentGenerator):
         Returns a prettified string representation with the key configuration details for the simulation.
         """
         return_string = "{0}**Conversational Search User**{1}".format(" "*self.__simulation_components.output.output_indentation*2, os.linesep)
-<<<<<<< HEAD
         return_string = "{0}{1}{2}".format(return_string, "{0}User Context: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['userContext']['@class'], os.linesep, self._prettify_attributes(self._config_dict['userContext'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Utterance Generator: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['utteranceGenerator']['@class'], os.linesep, self._prettify_attributes(self._config_dict['utteranceGenerator'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}CSRP Impression: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['csrpImpression']['@class'], os.linesep, self._prettify_attributes(self._config_dict['csrpImpression'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Response Classifier: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['responseClassifier']['@class'], os.linesep, self._prettify_attributes(self._config_dict['responseClassifier'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Response Decision Maker: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['responseDecisionMaker']['@class'], os.linesep, self._prettify_attributes(self._config_dict['responseDecisionMaker'], self.__simulation_components.output.output_indentation)), os.linesep)
-=======
-        # return_string = "{0}{1}".format("{0}{1}Query Generator: {2}{3}{4}".format(return_string, " "*self.__simulation_components.output.output_indentation*2, self._config_dict['queryGenerator']['@class'], os.linesep, self._prettify_attributes(self._config_dict['queryGenerator'], self.__simulation_components.output.output_indentation)), os.linesep)
-        # return_string = "{0}{1}{2}".format(return_string, "{0}Logger: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['logger']['@class'], os.linesep, self._prettify_attributes(self._config_dict['logger'], self.__simulation_components.output.output_indentation)), os.linesep)
-        # return_string = "{0}{1}{2}".format(return_string, "{0}User Context: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['userContext']['@class'], os.linesep, self._prettify_attributes(self._config_dict['userContext'], self.__simulation_components.output.output_indentation)), os.linesep)
->>>>>>> 1f3393c (Almost working)
         
         return return_string
 
