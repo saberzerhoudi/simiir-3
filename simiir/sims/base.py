@@ -4,15 +4,6 @@ from user.loggers import Actions
 from ifind.search.query import Query
 import abc
 
-action_to_function_mapping = {
-    'QUERY'  : Actions.QUERY,
-    'SERP'   : Actions.SERP,
-    'SNIPPET': Actions.SNIPPET,
-    'DOC'    : Actions.DOC,
-    'MARK'   : Actions.MARK,
-    'None'           : None
-}
-
 
 class SimulatedBaseUser(object):
     """
@@ -22,37 +13,28 @@ class SimulatedBaseUser(object):
         self._user_context = configuration.user.user_context
         self._output_controller = configuration.output
         self._logger = configuration.user.logger
-        self._document_classifier = configuration.user.document_classifier
-        self._snippet_classifier = configuration.user.snippet_classifier
-        self._query_generator = configuration.user.query_generator
-        self._serp_impression = configuration.user.serp_impression
-        self._result_stopping_decision_maker = configuration.user.decision_maker
         self._action_value = None  # Response from the previous action method - True or False? (did the user do or not do what they thought?)
     
-        """
-        This method is central to the whole simulation - it decides which action the user should perform next.
-        The workflow implemented should have a structure similar to the following: 
-        (1)  User issues query
-        (2)  Examine a snippet
-        (3*) If the snippet looks at least somewhat relevant, goto (6) else decide whether to goto (1) or (2)
-        (4)  Examine document
-        (5*) If the document looks to be relevant to the provided topic, goto (6), else decide whether to goto (1) or (2)
-        (6)  Mark the document
-        (7*) Decide whether to goto (1) or (2)
-        This method returns None.
-        
+        """        
         The last_to_next_action_mapping from the last action to the next action
         decides means that after the action is peformed,
         we get a chance to update the log, state, etc.
-        before performing the next action
+        before performing the next action.
+
+        When you implement the after methods, you are can define the workflow of the user.
         """
         self.last_to_next_action_mapping = {
-            Actions.QUERY  : self._after_query,
-            Actions.SERP   : self._after_serp,
-            Actions.SNIPPET: self._after_snippet,
-            Actions.DOC    : self._after_assess_document,
-            Actions.MARK   : self._after_mark,
-            None           : self._after_none
+            Actions.QUERY       : self._after_query,
+            Actions.SERP        : self._after_serp,
+            Actions.SNIPPET     : self._after_snippet,
+            Actions.DOC         : self._after_assess_document,
+            Actions.MARK        : self._after_mark,
+            Actions.UTTERANCE   : self._after_utterance,
+            Actions.CSRP        : self._after_csrp,
+            Actions.RESPONSE    : self._after_response,
+            Actions.MARKRESPONSE: self._after_mark_response,
+            Actions.STOP        : self._after_stop,
+            None                : self._after_none
         }
 
         """
@@ -64,7 +46,12 @@ class SimulatedBaseUser(object):
             Actions.SERP   : self._do_serp,
             Actions.SNIPPET: self._do_snippet,
             Actions.DOC    : self._do_assess_document,
-            Actions.MARK   : self._do_mark_document
+            Actions.MARK   : self._do_mark_document,
+            Actions.UTTERANCE: self._do_utterance,
+            Actions.CSRP: self._do_csrp,
+            Actions.RESPONSE: self._do_response,
+            Actions.MARKRESPONSE: self._do_mark_response,
+            Actions.STOP: self._do_stop
         }
 
     def decide_action(self):
@@ -124,36 +111,77 @@ class SimulatedBaseUser(object):
         """
         # raise a not implemented error
         raise NotImplementedError("Method not implemented")
-
+    
+    def _do_utterance(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _do_csrp(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _do_response(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _do_mark_response(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def do_response_stopping_decider(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _do_stop(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
     def _after_query(self):
-        self._do_action(Actions.SERP)
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
 
     def _after_serp(self):
-        if self._action_value:
-            self._do_action(Actions.SNIPPET)
-        else:
-            self._do_action(Actions.QUERY)            
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")           
 
     def _after_snippet(self):
-        if self._action_value:
-            self._do_action(Actions.DOC)
-        else:
-            self._do_action(self._do_result_stopping_decider())
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
 
     def _after_assess_document(self):
-        if self._action_value:
-            self._do_action(Actions.MARK)
-        else:
-            self._do_action(self._do_result_stopping_decider())
-
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
     def _after_mark(self):
-        #This condition will always be True; we won't get here unless the document has been successfully marked!
-        #After the document has been marked, the user must decide whether (s)he wants to look at the subsequent snippet, or issue another query.
-        self.__do_action(self._do_result_stopping_decider())
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
     
     def _after_none(self):
-        """
-        If no action has been supplied from before, then we must be at the start of the search session.
-        Therefore, we begin by querying.
-        """
-        self._do_action(Actions.QUERY)
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+
+    def _after_utterance(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+
+    def _after_csrp(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+
+    def _after_response(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _after_mark_response(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+
+    def _after_stop(self):
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+
+
+
+        
+
+

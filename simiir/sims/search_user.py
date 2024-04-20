@@ -11,43 +11,29 @@ class SimulatedUser(SimulatedBaseUser):
     def __init__(self, configuration):
         # call the parent class constructor
         super(SimulatedUser, self).__init__(configuration)
-        #self._action_value = None  # Response from the previous action method - True or False? (did the user do or not do what they thought?)
-        #self._user_context = configuration.user.user_context
-        #self._output_controller = configuration.output
-        #self._logger = configuration.user.logger
         
-        self._document_classifier = configuration.user.document_classifier
-        self._snippet_classifier = configuration.user.snippet_classifier
         self._query_generator = configuration.user.query_generator
         self._serp_impression = configuration.user.serp_impression
+        self._snippet_classifier = configuration.user.snippet_classifier
+        self._document_classifier = configuration.user.document_classifier
         self._result_stopping_decision_maker = configuration.user.decision_maker
+        """
+        The workflow implemented below is as follows. Steps with asterisks are DECISION POINTS.
         
+        (1)  User issues query
+        (2)  User looks at the SERP
+        (3*) If the SERP looks poor, goto (1) else goto (4)
+        
+        (4)  Examine a snippet
+        (5*) If the snippet looks at least somewhat relevant, goto (6) else decide whether to goto (1) or (4)
+        
+        (6)  Examine document
+        (7*) If the document looks to be relevant to the provided topic, goto (8), else decide whether to goto (1) or (4)
+        
+        (8)  Mark the document
+        (9*) Decide whether to goto (1) or (4)
         """
-        The last_to_next_action_mapping from the last action to the next action
-        decides means that after the action is peformed,
-        we get a chance to update the log, state, etc.
-        before performing the next action
-        """
-        self.last_to_next_action_mapping = {
-            Actions.QUERY  : self._after_query,
-            Actions.SERP   : self._after_serp,
-            Actions.SNIPPET: self._after_snippet,
-            Actions.DOC    : self._after_assess_document,
-            Actions.MARK   : self._after_mark,
-            None           : self._after_none
-        }
-
-        """
-        When an action is to be performed, the action_mapping dictionary is
-        used to call the appropriate method to perform the action.
-        """
-        self.action_mapping = {
-            Actions.QUERY  : self._do_query,
-            Actions.SERP   : self._do_serp,
-            Actions.SNIPPET: self._do_snippet,
-            Actions.DOC    : self._do_assess_document,
-            Actions.MARK   : self._do_mark_document
-        }
+       
     
     def _do_query(self):
         """

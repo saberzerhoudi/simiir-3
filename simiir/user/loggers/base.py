@@ -23,6 +23,7 @@ class BaseLogger(object):
             Actions.SNIPPET: self._log_snippet,
             Actions.DOC    : self._log_assess,
             Actions.MARK   : self._log_mark_document,
+            #Actions.UTTERANCE: self._log_utterance,
         }
         
         if action_mapping[action_name]:
@@ -117,6 +118,14 @@ class BaseLogger(object):
         Returns None.
         """
         pass
+
+    #@abc.abstractmethod
+    #def _log_utterance(self, **kwargs):
+    #    """
+    #    Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of utterance.
+    #    Returns None.
+    #    """
+    #    pass
     
     def __log_unknown_action(self):
         self._report('UNKNOWN ACTION')

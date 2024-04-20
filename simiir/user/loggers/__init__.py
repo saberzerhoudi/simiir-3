@@ -7,4 +7,4 @@ sys.path.append("..") # Adds higher directory to python modules path.
 
 from simiir.utils.enum import Enum
 
-Actions = Enum(['QUERY', 'SERP', 'SNIPPET', 'DOC', 'MARK'])
+Actions = Enum(['QUERY', 'SERP', 'SNIPPET', 'DOC', 'MARK', 'UTTERANCE', 'CSRP', 'RESPONSE', 'MARKRESPONSE', 'STOP'])
