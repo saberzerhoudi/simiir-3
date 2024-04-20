@@ -1,3 +1,10 @@
+<!--
+Simulation Configuration DTD for a Conversational Simulation
+
+Authors: Leif Azzopardi & David Maxwell
+Date:   2024-04-20
+-->
+
 <userConfiguration id="base_conversational_user" type="ConversationalSearchUser">
 
     <utteranceGenerator class="BaseUtteranceGenerator">
