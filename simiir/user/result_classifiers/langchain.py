@@ -5,11 +5,7 @@ from simiir.user.result_classifiers.base import BaseTextClassifier
 from simiir.user.utils.langchain_wrapper import LangChainWrapper
 from simiir.utils.tidy import clean_html
 from langchain_core.prompts import PromptTemplate
-from langchain.output_parsers import PydanticOutputParser
-from langchain_core.output_parsers import JsonOutputParser
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
-from pydantic import BaseModel, Field
-import cleantext
 
 import logging
 log = logging.getLogger('result_classifier.LangChainTextClassifier')
