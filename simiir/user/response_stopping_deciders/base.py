@@ -1,5 +1,6 @@
 import abc
 import random
+from loggers import ACTIONS
 
 class BaseResponseDecisionMaker(object):
     """
@@ -18,6 +19,6 @@ class BaseResponseDecisionMaker(object):
         
         # randomly decide whether to continue or not, for now
         if random.random() < 0.5:
-            return True 
+            return ACTIONS.UTTER
         else:    
-            return False
+            return ACTIONS.STOP

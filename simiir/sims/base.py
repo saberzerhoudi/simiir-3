@@ -180,8 +180,3 @@ class SimulatedBaseUser(object):
         # raise a not implemented error
         raise NotImplementedError("Method not implemented")
 
-
-
-        
-
-

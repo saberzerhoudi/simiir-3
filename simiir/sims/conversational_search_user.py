@@ -35,21 +35,20 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         """
         Called when the simulated user wishes to issue an utterance.
         """
-        utterance_text = 'Hello'
-        #self._utterance_generator.update_model(self._user_context)
+        self._utterance_generator.update_model(self._user_context)
         # Get a query from the generator.
-        #utterance_text = self._utterance_generator.get_next_utterance(self._user_context)
+        utterance_text = self._utterance_generator.get_next_utterance(self._user_context)
         
         if utterance_text:
-        #    self._user_context.add_issued_utterance(utterance_text)  
+            self._user_context.add_issued_utterance(utterance_text)  
             self._logger.log_action(Actions.UTTERANCE, utterance=utterance_text)
-        #    self._output_controller.log_utterance(utterance_text)
+            # reusing the save to query log onthe output controller for utterances
+            self._output_controller.log_query(utterance_text)
             return True
         
-        #self._output_controller.log_info(info_type="OUT_OF_UTTERANCES")
+        self._output_controller.log_info(info_type="OUT_OF_UTTERANCES")
         #self._logger.utterances_exhausted()
         return False
-
 
     def _do_csrp(self):
         """
@@ -59,9 +58,8 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         #if self._user_context.get_current_response_length() == 0:
         #    self._logger.log_action(Actions.CSRP, status="EMPTY_CRP")
         #    return False  # No results present; return False (we don't continue with this SERP)
-        is_csrp_attractive = True
-        #is_csrp_attractive = self._csrp_impression.is_csrp_attractive()
-        #self._user_context.add_csrp_impression(is_csrp_attractive)  # Update the search context.    
+        is_csrp_attractive = self._csrp_impression.is_csrp_attractive()
+        self._user_context.add_csrp_impression(is_csrp_attractive)  # Update the search context.    
         
         if is_csrp_attractive:
             self._logger.log_action(Actions.CSRP, status="EXAMINE_CSRP")
@@ -106,6 +104,13 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         Decide whether to issue another utterance or stop.
         """
         return self._response_stopping_decision_maker.decide()
+    
+    def _do_stop(self):
+        """
+        Called when the simulated user wishes to stop.
+        """
+        self._logger.log_action(Actions.STOP)
+        return None
 
 
     def _after_utterance(self):
@@ -125,5 +130,9 @@ class SimulatedConversationalUser(SimulatedBaseUser):
     
     def _after_mark_response(self):
         self._do_action(self._do_response_stopping_decider())
+
+    def _after_stop(self):
+        return None
+
 
     

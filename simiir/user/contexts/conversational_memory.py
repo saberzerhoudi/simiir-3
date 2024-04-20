@@ -1,10 +1,10 @@
 import os
 import abc
+import logging
 from simiir.user.loggers import Actions
 from ifind.search.query import Query
 from simiir.search.interfaces import Document
-import logging
-from memory import Memory
+from simiir.user.contexts.memory import Memory
 
 log = logging.getLogger('user_context.user_context')
 
@@ -28,35 +28,20 @@ class ConversationalMemory(Memory):
         self.topic = topic
         
         self._actions = []                       # A list of all of the actions undertaken by the simulated user in chronological order.
-        
-        #self._last_query = None                  # The Query object that was issued.
-        #self._last_results = None                # Results for the query.
-        #self._last_serp_impression = None        # Results for the last SERP impression upon the searcher
-        #self._issued_queries = []                # A list of queries issued in chronological order.
-        #self._serp_impressions = []              # A list of SERP impressions in chronological order. The length == issued_queries above.
-        
-        #self._attractive_serp_count = 0          # Count of SERPs viewed that were attractive enough to view.
-        #self._unattractive_serp_count = 0        # Count of SERPs viewed that were judged to be unattractive.
-        
-        #self._current_serp_position = 0          # The position in the current SERP we are currently looking at (zero-based!)
-                                                 # This counter is used for the current snippet and document.
-        #self._snippets_examined = []             # Snippets that have been previously examined for the current query.
         #self._documents_examined = []            # Documents that have been previously examined for the current query.
-        
-        #self._previously_examined_snippets = []  # A list of all snippets that have been seen more than once across the search session.
-        #self._all_snippets_examined = []         # A list of all snippets examined throughout the search session.
         #self._all_documents_examined = []        # A list of all documents examined throughout the search session.
-        
         #self._relevant_documents = []            # All documents marked relevant throughout the search session.
         #self._irrelevant_documents = []          # All documents marked irrelevant throughout the search session.
-
-        #self.query_limit = 0                     # 0 - no limit on the number issued. Otherwise, the number of queries is capped
-        
+     
         self._last_utterance = None                  # The Utterance object that was issued.
         self._last_response = None                # Response for the utterance.
+        self._current_response = None
+        self._current_response = None
         self._last_csrp_impression = None        # Response for the last Conversational SERP impression upon the searcher
         self._issued_utterances = []                # A list of utterances issued in chronological order.
         self._csrp_impressions = []              # A list of Conversational SERP impressions in chronological order. The length == issued_queries above.
+        self._attractive_csrp_count = 0          # Count of CSRP viewed that were attractive enough to view.
+        self._unattractive_csrp_count = 0        # Count of CSRP viewed that were judged to be unattractive.
         self.utterance_limit = 0                     # 0 - no limit on the number issued. Otherwise, the number of queries is capped
         self._responses_examined = []
         self._relevant_responses = []
@@ -125,7 +110,6 @@ class ConversationalMemory(Memory):
         """
         if self._last_csrp_impression is not None:
             self._csrp_impressions.append(self._last_csrp_impression)
-        
         self._last_csrp_impression = None
     
     def _set_snippet_action(self):
@@ -196,12 +180,26 @@ class ConversationalMemory(Memory):
         """
         return self._issued_utterances
     
-    def add_irrelevant_response(self, document):
+    def add_irrelevant_response(self, response):
         pass
 
-    def add_relevant_response(self, document):
+    def add_relevant_response(self, response):
         pass
 
     def get_current_response(self):
         return None
+    
+    def add_csrp_impression(self, is_attractive):
+        if is_attractive:
+            self._attractive_csrp_count += 1
+        else:
+            self._unattractive_csrp_count += 1
 
+
+    def get_last_response(self):
+        return self._last_response
+    
+    def get_current_response():
+        
+        return None
+    
