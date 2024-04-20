@@ -39,7 +39,6 @@ class ConversationalMemory(Memory):
         self._responses_examined = []
         self._relevant_responses = []
 
-
     def report(self):
         """
         Returns basic statistics held within the search context at the time of calling.
