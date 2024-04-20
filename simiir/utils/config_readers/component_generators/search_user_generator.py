@@ -1,17 +1,20 @@
 import os
 from simiir.utils.config_readers.component_generators.base_generator import BaseComponentGenerator
 
-class UserComponentGenerator(BaseComponentGenerator):
+class SearchUserComponentGenerator(BaseComponentGenerator):
     """
     """
     def __init__(self, simulation_components, config_dict):
-        super(UserComponentGenerator, self).__init__(config_dict)
+        super(SearchUserComponentGenerator, self).__init__(config_dict)
         
         self.__simulation_components = simulation_components
         
         
         # Store the user's ID for easy access.
         self.id = self._config_dict['@id']
+        self.type = self._config_dict['@type']
+
+        print(self._config_dict)
 
         # Create the user's query generator.
         self.query_generator = self._get_object_reference(config_details=self._config_dict['queryGenerator'],
@@ -60,7 +63,8 @@ class UserComponentGenerator(BaseComponentGenerator):
         """
         Returns a prettified string representation with the key configuration details for the simulation.
         """
-        return_string = "{0}{1}".format("{0}Query Generator: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['queryGenerator']['@class'], os.linesep, self._prettify_attributes(self._config_dict['queryGenerator'], self.__simulation_components.output.output_indentation)), os.linesep)
+        return_string = "{0}**Search User**{1}".format(" "*self.__simulation_components.output.output_indentation*2, os.linesep)
+        return_string = "{0}{1}".format("{0}{1}Query Generator: {2}{3}{4}".format(return_string, " "*self.__simulation_components.output.output_indentation*2, self._config_dict['queryGenerator']['@class'], os.linesep, self._prettify_attributes(self._config_dict['queryGenerator'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Snippet Classifier: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['textClassifiers']['snippetClassifier']['@class'], os.linesep, self._prettify_attributes(self._config_dict['textClassifiers']['snippetClassifier'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Document Classifier: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['textClassifiers']['documentClassifier']['@class'], os.linesep, self._prettify_attributes(self._config_dict['textClassifiers']['documentClassifier'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Stopping Decision Maker: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['stoppingDecisionMaker']['@class'], os.linesep, self._prettify_attributes(self._config_dict['stoppingDecisionMaker'], self.__simulation_components.output.output_indentation)), os.linesep)

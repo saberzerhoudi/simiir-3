@@ -1,6 +1,6 @@
 import abc
 import random
-from loggers import ACTIONS
+from simiir.user.loggers import Actions
 
 class BaseResponseDecisionMaker(object):
     """
@@ -19,6 +19,6 @@ class BaseResponseDecisionMaker(object):
         
         # randomly decide whether to continue or not, for now
         if random.random() < 0.5:
-            return ACTIONS.UTTER
+            return Actions.UTTERANCE
         else:    
-            return ACTIONS.STOP
+            return Actions.STOP

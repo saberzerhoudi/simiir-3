@@ -1,4 +1,4 @@
-<userConfiguration id="fallible_trec_user">
+<userConfiguration id="fallible_trec_user" type="SearchUser">
 	
 	<queryGenerator class="TrecTopicQueryGenerator">
 		<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />

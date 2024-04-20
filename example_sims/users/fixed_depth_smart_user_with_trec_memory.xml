@@ -1,4 +1,4 @@
-<userConfiguration id="fixeddepthuser">
+<userConfiguration id="fixeddepthuser" type="SearchUser">
 
 	<queryGenerator class="SmarterQueryGenerator">
 		<attribute name="id" type="integer" value="13" is_argument="false" />

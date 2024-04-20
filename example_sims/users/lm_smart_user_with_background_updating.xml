@@ -1,4 +1,4 @@
-<userConfiguration id="lmsmartuser-updating">
+<userConfiguration id="lmsmartuser-updating" type="SearchUser">
 	
 	<queryGenerator class="SmarterQueryGenerator">
 		<attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />

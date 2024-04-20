@@ -15,7 +15,7 @@ class ConversationalFixedCostLogger(BaseLogger):
                  time_limit=120,
                  utterance_cost=10,
                  response_cost=30,
-                 crsp_impression_cost=5,
+                 csrp_impression_cost=5,
                  mark_response_cost=3):
         """
         Instantiates the BaseLogger class and sets up additional instance variables for the FixedCostLogger.
@@ -26,7 +26,7 @@ class ConversationalFixedCostLogger(BaseLogger):
         #  Series of costs (in seconds) for each interaction that the user can perform; these are fixed.
         self._utterance_cost = utterance_cost
         self._response_cost = response_cost
-        self._crsp_impression_cost = crsp_impression_cost
+        self._csrp_impression_cost = csrp_impression_cost
         self._mark_response_cost = mark_response_cost
         
         self._total_time = 0  # An elapsed counter of the number of seconds a user has been interacting for.
@@ -40,7 +40,7 @@ class ConversationalFixedCostLogger(BaseLogger):
            progressbar.Bar('*'),' (',
            progressbar.ETA(), ') ',
           ]
-        
+
         self._bar = progressbar.ProgressBar(maxval=self._time_limit, widgets=widgets)
         self._bar.start()
 
@@ -95,7 +95,7 @@ class ConversationalFixedCostLogger(BaseLogger):
         """
         Concrete implementation for logging a CSRP impression at a fixed cost.
         """
-        self._total_time = self._total_time + self._crsp_impression_cost
+        self._total_time = self._total_time + self._csrp_impression_cost
         self._report(Actions.CSRP, **kwargs)
 
     def _log_assess_response(self, **kwargs):

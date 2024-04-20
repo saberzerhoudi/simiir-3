@@ -1,4 +1,4 @@
-<userConfiguration id="ift_prerolled_user">
+<userConfiguration id="ift_prerolled_user" type="SearchUser">
 	
 	<queryGenerator class="SingleTriInterleavedQueryGenerator">
 		<attribute name="id" type="integer" value="13" is_argument="false" /><attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />

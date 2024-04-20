@@ -1,4 +1,4 @@
-<userConfiguration id="lmtritermsmartuser">
+<userConfiguration id="lmtritermsmartuser" type="SearchUser">
 	
 	<queryGenerator class="TriTermQueryGenerator">
 		<attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />

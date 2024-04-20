@@ -13,7 +13,7 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         super(SimulatedConversationalUser, self).__init__(configuration)
 
         self._utterance_generator = configuration.user.utterance_generator
-        self._csrp_impression = configuration.user.crsp_impression
+        self._csrp_impression = configuration.user.csrp_impression
         self._response_classifier = configuration.user.response_classifier
         self._response_stopping_decision_maker = configuration.user.response_decision_maker
 
@@ -120,7 +120,7 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         if self._action_value:
             self._do_action(Actions.RESPONSE)
         else:
-            self._do_action(Actions.UTTER)
+            self._do_action(Actions.UTTERANCE)
 
     def _after_response(self):
         if self._action_value:
@@ -133,6 +133,7 @@ class SimulatedConversationalUser(SimulatedBaseUser):
 
     def _after_stop(self):
         return None
-
-
+    
+    def _after_none(self):
+        return Actions.UTTERANCE
     

@@ -1,4 +1,4 @@
-<userConfiguration id="ifind-smartuser">
+<userConfiguration id="ifind-smartuser" type="SearchUser">
 
 	<queryGenerator class="SmarterQueryGenerator">
 		<attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />

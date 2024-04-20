@@ -26,31 +26,31 @@ class BaseSearchInterface(object):
         pass
 
 
-    class ConversationalBaseInterface(BaseSearchInterface):
+class ConversationalBaseInterface(BaseSearchInterface):
 
-        def __init__(self):
-            super(ConversationalBaseInterface, self).__init__()
-            self._last_response = None
-            self._last_query = None
+    def __init__(self):
+        super(ConversationalBaseInterface, self).__init__()
+        self._last_response = None
+        self._last_query = None
 
-        def issue_query(self, query):
-            raise NotImplementedError("Method not implemented")
+    def issue_query(self, query):
+        raise NotImplementedError("Method not implemented")
 
-        def get_document(self, document_id):
-            raise NotImplementedError("Method not implemented")
-        
-        @abc.abstractmethod
-        def issue_utterance(self, utterance):
-            """
-            Abstract method used to issue an utterance to the underlying search engine of a concrete implementation of a search interface.
-            Takes an ifind query object as its only parameter.
-            """
-            pass
+    def get_document(self, document_id):
+        raise NotImplementedError("Method not implemented")
+    
+    @abc.abstractmethod
+    def issue_utterance(self, utterance):
+        """
+        Abstract method used to issue an utterance to the underlying search engine of a concrete implementation of a search interface.
+        Takes an ifind query object as its only parameter.
+        """
+        pass
 
-        @abc.abstractmethod
-        def get_response(self, utterance):
-            """
-            Abstract method used for retrieving a response from the search engine's response index.
-            The parameter response_id may be used to uniquely identify a response (e.g. an ID) within the engine's index.
-            """
-            pass
+    @abc.abstractmethod
+    def get_response(self, utterance):
+        """
+        Abstract method used for retrieving a response from the search engine's response index.
+        The parameter response_id may be used to uniquely identify a response (e.g. an ID) within the engine's index.
+        """
+        pass

@@ -1,7 +1,7 @@
 import os
 from simiir.search.interfaces import Topic
 from simiir.utils.output_controller import OutputController
-from simiir.utils.config_readers.user_config_reader import UserConfigReader
+from simiir.utils.config_readers.users import get_user_config_reader
 from simiir.utils.config_readers.component_generators.base_generator import BaseComponentGenerator
 
 class SimulationComponentGenerator(BaseComponentGenerator):
@@ -28,9 +28,9 @@ class SimulationComponentGenerator(BaseComponentGenerator):
         self.search_interface = self._get_object_reference(config_details=self._config_dict['searchInterface'],
                                                            package='search.interfaces')
         
-        # Create the user object - by loading the specified file into a UserConfigReader, then obtaining its components.
+        # Create the user object - by selecting the correct user type config reader, then obtain its components.
         user_config_file = self._config_dict['user']['@configurationFile']
-        self.user = UserConfigReader(user_config_file).get_component_generator(self)
+        self.user = get_user_config_reader(config_filename=user_config_file).get_component_generator(self)
         
         # Creates a "base ID" for the saving of files, comprised of different component IDs (to uniquely identify the simulation).
         self.base_id = '{0}-{1}-{2}'.format(self.simulation_id, self.topic.id, self.user.id)
