@@ -24,3 +24,27 @@ class ConversationalUserConfigReader(BaseConfigReader):
         """
         # User ID
         empty_string_check(self._config_dict['@id'])
+
+        # Utterance Generators
+        empty_string_check(self._config_dict['utteranceGenerator']['@class'])
+        check_attributes(self._config_dict['utteranceGenerator'])
+
+        # CSRP Impressions
+        empty_string_check(self._config_dict['csrpImpression']['@class'])
+        check_attributes(self._config_dict['csrpImpression'])
+
+        # Response Classifiers
+        empty_string_check(self._config_dict['responseClassifier']['@class'])
+        check_attributes(self._config_dict['responseClassifier'])
+
+        # Response Decision Makers
+        empty_string_check(self._config_dict['responseDecisionMaker']['@class'])
+        check_attributes(self._config_dict['responseDecisionMaker'])
+
+        # Search Context
+        empty_string_check(self._config_dict['userContext']['@class'])
+        check_attributes(self._config_dict['userContext'])
+
+        # Logger
+        empty_string_check(self._config_dict['logger']['@class'])
+        check_attributes(self._config_dict['logger'])
