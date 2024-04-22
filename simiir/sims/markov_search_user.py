@@ -4,91 +4,91 @@ from user.loggers import Actions
 from ifind.search.query import Query
 
 # Global variables for paths
-TRANSITION_MATRIX_PATH = 'path/to/your/transition_matrix.pkl'
-STATES_PATH = 'path/to/your/states.pkl'
+TRANSITION_MATRIX_PATH = '../example_model/known_session_vectors_suss_matrix.data'
+STATES_PATH = '../example_model/known_session_vectors_suss_states.data'
+
+class MarkovChain(object):
+    """
+    Represents the Markov Chain functionality.
+    """
+    def __init__(self, transition_matrix, states):
+        """
+        Initialize the MarkovChain instance.
+
+        Parameters
+        ----------
+        transition_matrix : 2-D array
+            A 2-D array representing the probabilities of change of 
+            state in the Markov Chain. Each row of the matrix should 
+            sum to 1, and the matrix should be square, meaning its 
+            dimensions are [n_states x n_states], where n_states is 
+            the number of states in the Markov Chain.
+
+        states : 1-D array
+            An array representing the states of the Markov Chain. It
+            needs to be in the same order as the transition_matrix. 
+            The length of this array should match the dimensions of 
+            the transition_matrix, ensuring each state has a 
+            corresponding row and column in the matrix.
+        """
+        # Load transition_matrix from a pickle file
+        with open(transition_matrix, 'rb') as f:
+            self.transition_matrix = pickle.load(f)
+        
+        # Load states from a pickle file
+        with open(states, 'rb') as f:
+            self.states = pickle.load(f)
+
+        self.index_dict = {self.states[index]: index for index in range(len(self.states))}
+        self.state_dict = {index: self.states[index] for index in range(len(self.states))}
+
+    def next_state(self, current_state):
+        """
+        Returns the state of the random variable at the next time instance.
+        """
+        return np.random.choice(self.states, p=self.transition_matrix[self.index_dict[current_state], :])
+
+    def next_state_probabilities(self, current_state):
+        """
+        Returns the probabilities of moving to each possible next state from the current state.
+        """
+        current_state_index = self.index_dict[current_state]
+        probabilities = self.transition_matrix[current_state_index, :]
+        return {state: prob for state, prob in zip(self.states, probabilities)}
+
 
 class BasicMarkovUser(object):
     """
     A basic user model that uses a Markov Chain to decide the next action. Stores references to all the required components, and contains the logical workflow for the simulation. 
     """
-    
-    class MarkovChain(object):
-        """
-        An inner class that represents the Markov Chain functionality.
-        """
-        def __init__(self, transition_matrix, states):
-            """
-            Initialize the MarkovChain instance.
-
-            Parameters
-            ----------
-            transition_matrix : 2-D array
-                A 2-D array representing the probabilities of change of 
-                state in the Markov Chain. Each row of the matrix should 
-                sum to 1, and the matrix should be square, meaning its 
-                dimensions are [n_states x n_states], where n_states is 
-                the number of states in the Markov Chain.
-
-            states : 1-D array
-                An array representing the states of the Markov Chain. It
-                needs to be in the same order as the transition_matrix. 
-                The length of this array should match the dimensions of 
-                the transition_matrix, ensuring each state has a 
-                corresponding row and column in the matrix.
-            """
-            # Load transition_matrix from a pickle file
-            with open(transition_matrix, 'rb') as f:
-                self.transition_matrix = pickle.load(f)
-            
-            # Load states from a pickle file
-            with open(states, 'rb') as f:
-                self.states = pickle.load(f)
-
-            self.index_dict = {self.states[index]: index for index in range(len(self.states))}
-            self.state_dict = {index: self.states[index] for index in range(len(self.states))}
-
-        def next_state(self, current_state):
-            """
-            Returns the state of the random variable at the next time instance.
-            """
-            return np.random.choice(self.states, p=self.transition_matrix[self.index_dict[current_state], :])
-
-        def next_state_probabilities(self, current_state):
-            """
-            Returns the probabilities of moving to each possible next state from the current state.
-
-            Parameters
-            ----------
-            current_state : str
-                The current state of the system.
-
-            Returns
-            -------
-            dict
-                A dictionary where keys are the next possible states and values are the corresponding probabilities.
-            """
-            current_state_index = self.index_dict[current_state]
-            probabilities = self.transition_matrix[current_state_index, :]
-            return {state: prob for state, prob in zip(self.states, probabilities)}
-
     def __init__(self, configuration, transition_matrix, states):
         self.__user_context = configuration.user.user_context
         self.__output_controller = configuration.output
         self.__logger = configuration.user.logger
         
         # Initialize the Markov Chain with the transition matrix and states
-        self.__markov_chain = self.MarkovChain(TRANSITION_MATRIX_PATH, STATES_PATH)
+        self.__markov_chain = MarkovChain(TRANSITION_MATRIX_PATH, STATES_PATH)
         
-        self.__action_value = None
-    
+        self.__has_started = False 
+   
     def decide_action(self):
         """
         Decides the next action based on the Markov Chain model.
         """
-        last_action = self.__user_context.get_last_action()
-        if last_action is None:
-            last_action = 'None'  # Use 'None' string for initial state
+        if not self.__has_started:
+            last_action = 'None'  
+            self.__has_started = True
+        else:
+            last_action = self.__user_context.get_last_action()
+            
+        if last_action == Actions.END:
+            self.__do_stop()
+            return
         
+        # Log all probabilities from the current state
+        probabilities = self.__markov_chain.next_state_probabilities(last_action)
+        self.__logger.log_info(f"Probabilities from {last_action}: {probabilities}")
+
         # Get the next probable action from the Markov Chain
         next_action = self.__markov_chain.next_state(last_action)
         
@@ -107,7 +107,8 @@ class BasicMarkovUser(object):
             Actions.SNIPPET: self.__do_snippet,
             Actions.DOC: self.__do_assess_document,
             Actions.MARK: self.__do_mark_document,
-            'None': self.__do_query  # If no action, start with a query
+            Actions.END: self.__do_stop,
+            'None': self.__do_query,  
         }
         return action_methods.get(action, None)
     
@@ -224,3 +225,9 @@ class BasicMarkovUser(object):
         
         #self.__logger.log_action(Actions.MARK, doc_id=document.doc_id)
         return True
+    
+    def __do_stop(self):
+        """
+        Called when the simulation ends.
+        """
+        self.__logger.log_info("Simulation ended.")
