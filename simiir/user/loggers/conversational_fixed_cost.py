@@ -62,6 +62,10 @@ class ConversationalFixedCostLogger(BaseLogger):
         Concrete implementation of the is_finished() method from the BaseLogger.
         Returns True if the user has reached their search "allowance".
         """
+        print(self._user_context.get_last_action())
+        if self._user_context.get_last_action() == Actions.STOP:
+            return True 
+
         if self._total_time < self._time_limit:
             self._bar.update(self._total_time)
         # Include the super().is_finished() call to determine if there are any queries left to process.
