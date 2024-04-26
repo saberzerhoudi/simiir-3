@@ -27,7 +27,7 @@ class ConversationalMemory(Memory):
         
         self._last_utterance = None                  # The Utterance object that was issued.
         self._last_response = None                # Response for the utterance.
-        self._current_response = None
+        self._current_utternance = None
         self._current_response = None
         self._last_csrp_impression = None        # Response for the last Conversational SERP impression upon the searcher
         self._current_utternance = None
