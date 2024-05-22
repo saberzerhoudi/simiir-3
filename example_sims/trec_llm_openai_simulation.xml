@@ -1,8 +1,8 @@
 <!--
 Simulation Configuration DTD
 
-Authors: Leif Azzopardi & David Maxwell
-Date:   2015-09-09
+Authors: Adam Roegiest and Leif Azzopardi
+Date:   2024-04-05
 -->
 
 <simulationConfiguration id="example_test_sim">
@@ -22,8 +22,7 @@ Date:   2015-09-09
  	</topics>
 
 	<users>
-                <user configurationFile="../example_sims/users/fixed_depth_smart_user.xml" />
-                <user configurationFile="../example_sims/users/fixed_depth_smart_user_with_trec_memory.xml" />
+                <user configurationFile="../example_sims/users/trec_llm_openai_result_user.xml" />
 	</users>
 
 	<searchInterface class="WhooshSearchInterface">

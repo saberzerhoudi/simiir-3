@@ -25,7 +25,7 @@ class InformedTrecTextClassifier(BaseInformedTrecTextClassifier):
         No dice rolling here. Whatever is in the judgement file is used.
         """
         val = self._get_judgment(self._topic.id, document.doc_id)
-        
+        log.debug(f'is_relevant(): For topic: {self._topic.id} and Doc: {document.doc_id} the QREL is: {val}')
         if val > 0:
             return True
         else:
