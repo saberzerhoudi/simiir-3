@@ -18,7 +18,7 @@ class Terrier(Engine):
         import pyterrier as pt
         if not pt.started():
             pt.init()
-        self.index_ref = str(index_ref)
+        self.index_ref = index_ref
         try:
             self.__index = pt.IndexFactory.of(index_ref, memory=memory)
         except Exception as e:

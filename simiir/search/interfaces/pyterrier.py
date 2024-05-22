@@ -39,7 +39,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
         if not pt.started():
             pt.init()
 
-        self.__index = pt.IndexFactory.of(index_or_dir, memory=memory)
+        self.__index = pt.IndexFactory.of(index_or_dir, memory=memory) if isinstance(index_or_dir, str) else index_or_dir
         self.__reader = self.__index.getMetaIndex()
 
         if self.__reader is None: log.warning("No reader defined, cannot fetch document text, doing so will result in an error")
