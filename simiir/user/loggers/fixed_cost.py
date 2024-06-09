@@ -86,6 +86,9 @@ class FixedCostLogger(BaseLogger):
         Includes additional details in the message such as the total elapsed time, and maximum time available to the user after the action has been processed.
         """
         log_entry_mapper = {
+            Actions.START  : "START",
+            Actions.STOP   : "STOP",
+            Actions.UNKNOWN: "UNKNOWN",
             Actions.QUERY  : kwargs.get('query'),
             Actions.SERP   : kwargs.get('status'),
             Actions.SNIPPET: "{0} {1}".format(kwargs.get('status'), kwargs.get('doc_id')),

@@ -28,16 +28,18 @@ class ConversationalMemory(Memory):
         self.topic = topic
         
         self._actions = []                       # A list of all of the actions undertaken by the simulated user in chronological order.
-        #self._documents_examined = []            # Documents that have been previously examined for the current query.
-        #self._all_documents_examined = []        # A list of all documents examined throughout the search session.
-        #self._relevant_documents = []            # All documents marked relevant throughout the search session.
-        #self._irrelevant_documents = []          # All documents marked irrelevant throughout the search session.
+        self._documents_examined = []            # Documents that have been previously examined for the current query.
+        self._all_documents_examined = []        # A list of all documents examined throughout the search session.
+        self._relevant_documents = []            # All documents marked relevant throughout the search session.
+        self._irrelevant_documents = []          # All documents marked irrelevant throughout the search session.
      
         self._last_utterance = None                  # The Utterance object that was issued.
         self._last_response = None                # Response for the utterance.
+        self._last_csrp_impression = None        # Response for the last Conversational SERP impression upon the searcher
+        
         self._current_utternance = None
         self._current_response = None
-        self._last_csrp_impression = None        # Response for the last Conversational SERP impression upon the searcher
+        self._current_csrp_impression = None
         self._issued_utterances = []                # A list of utterances issued in chronological order.
         self._csrp_impressions = []              # A list of Conversational SERP impressions in chronological order. The length == issued_queries above.
         self._attractive_csrp_count = 0          # Count of CSRP viewed that were attractive enough to view.
@@ -50,7 +52,8 @@ class ConversationalMemory(Memory):
             Actions.UTTERANCE:   self._set_utterance_action,
             Actions.CSRP:    self._set_csrp_action,
             Actions.RESPONSE: self._set_response_action,
-            Actions.MARKRESPONSE:    self._set_mark_response_action
+            Actions.MARKRESPONSE:    self._set_mark_response_action,
+            Actions.STOP:     self._set_stop_action,
         }
         
     
@@ -61,13 +64,13 @@ class ConversationalMemory(Memory):
         """
         return_string = f"""
             Number of Utterances Issued: {len(self._issued_utterances)}
+            Numbeer of Conversational SERP Impressions: {len(self._csrp_impressions)}
             Number of Responses Examined: {len(self._responses_examined)}
         """
-        
         self._output_controller.log_info(info_type="SUMMARY")
         self._output_controller.log_info(info_type="TOTAL_UTTERANCES_ISSUED", text=len(self._issued_utterances))
+        self._output_controller.log_info(info_type="TOTAL_CSRP_IMPRESSIONS", text=len(self._csrp_impressions))
         self._output_controller.log_info(info_type="TOTAL_RESPONSES_EXAMINED", text=len(self._responses_examined))
-        
         return return_string
 
     def get_last_action(self):
@@ -78,7 +81,7 @@ class ConversationalMemory(Memory):
         if self._actions:
             last_action = self._actions[-1]
         else:
-            last_action = None
+            last_action = Actions.START
         
         return last_action
     
@@ -108,9 +111,8 @@ class ConversationalMemory(Memory):
         Method called when a Conversational SERP is initially examined.
         Any modifications to the search context can be undertaken here.
         """
-        if self._last_csrp_impression is not None:
-            self._csrp_impressions.append(self._last_csrp_impression)
-        self._last_csrp_impression = None
+        self._csrp_impressions.append(self._current_csrp_impression)
+        
     
     def _set_snippet_action(self):
         # raise a not implemented error
@@ -121,11 +123,8 @@ class ConversationalMemory(Memory):
         Method called when a response is examined.
         Any modifications to the search context can be undertaken here.
         """
-        #if self._last_response is not None:
-        #    self._responses_examined.append(self._last_response)
+        self._responses_examined.append(self._current_response)
         
-        #self._last_response = None
-        pass
 
     def _set_mark_response_action(self):
         """
@@ -133,11 +132,17 @@ class ConversationalMemory(Memory):
         """
         pass
     
+    def _set_stop_action(self):
+        """
+        Called when the simulated user wishes to stop.
+        """
+        pass 
+
     def add_issued_utterance(self, utterance_text):
         """
         Adds a utterance to the stack of previously issued queries.
         """
-        self._issued_utterance.append(utterance_text)
+        self._issued_utterances.append(utterance_text)
         self._last_utterance = utterance_text
     
     def get_last_utterance(self):

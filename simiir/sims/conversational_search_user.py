@@ -103,7 +103,9 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         """
         Decide whether to issue another utterance or stop.
         """
-        return self._response_stopping_decision_maker.decide()
+        out = self._response_stopping_decision_maker.decide()
+        
+        return out
     
     def _do_stop(self):
         """
@@ -122,11 +124,11 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         else:
             self._do_action(Actions.UTTERANCE)
 
-    def _after_response(self):
+    def _after_assess_response(self):
         if self._action_value:
             self._do_action(Actions.MARKRESPONSE)
         else:
-            self._do_action(self._do_result_stopping_decider())
+            self._do_action(self._do_response_stopping_decider())
     
     def _after_mark_response(self):
         self._do_action(self._do_response_stopping_decider())
@@ -135,5 +137,5 @@ class SimulatedConversationalUser(SimulatedBaseUser):
         return None
     
     def _after_none(self):
-        return Actions.UTTERANCE
+        self._do_action(Actions.UTTERANCE)
     

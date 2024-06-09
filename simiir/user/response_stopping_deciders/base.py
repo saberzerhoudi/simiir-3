@@ -18,7 +18,8 @@ class BaseResponseDecisionMaker(object):
         """
         
         # randomly decide whether to continue or not, for now
+        action = Actions.STOP
         if random.random() < 0.5:
-            return Actions.UTTERANCE
-        else:    
-            return Actions.STOP
+            action = Actions.UTTERANCE
+
+        return action

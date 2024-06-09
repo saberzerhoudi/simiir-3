@@ -3,7 +3,6 @@ import sys
 import gc
 import logging
 from utils.progress_indicator import ProgressIndicator
-
 from sims.search_user import SimulatedUser
 from sims.conversational_search_user import SimulatedConversationalUser
 from utils.config_readers.simulation_config_reader import SimulationConfigReader
@@ -19,8 +18,6 @@ def main(config_filename):
     config_reader = SimulationConfigReader(config_filename)
 
     for configuration in config_reader:
-        #print "Running experiment {base_id}...".format(base_id=configuration.base_id),
-        
         if configuration.user.type == 'ConversationalSearchUser':
             user = SimulatedConversationalUser(configuration)
         else:

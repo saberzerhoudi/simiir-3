@@ -4,7 +4,6 @@ from user.loggers import Actions
 from ifind.search.query import Query
 import abc
 
-
 class SimulatedBaseUser(object):
     """
     The simulated user. Stores references to all the required components, and contains the logical workflow for the simulation.
@@ -13,8 +12,8 @@ class SimulatedBaseUser(object):
         self._user_context = configuration.user.user_context
         self._output_controller = configuration.output
         self._logger = configuration.user.logger
-        self._action_value = None  # Response from the previous action method - True or False? (did the user do or not do what they thought?)
-    
+        self._action_value = Actions.START  # The action value is the action that the user has decided to perform.    
+        self._logger.start_logging()
         """        
         The last_to_next_action_mapping from the last action to the next action
         decides means that after the action is peformed,
@@ -31,9 +30,10 @@ class SimulatedBaseUser(object):
             Actions.MARK        : self._after_mark,
             Actions.UTTERANCE   : self._after_utterance,
             Actions.CSRP        : self._after_csrp,
-            Actions.RESPONSE    : self._after_response,
+            Actions.RESPONSE    : self._after_assess_response,
             Actions.MARKRESPONSE: self._after_mark_response,
             Actions.STOP        : self._after_stop,
+            Actions.START       : self._after_none,
             None                : self._after_none
         }
 
@@ -49,7 +49,7 @@ class SimulatedBaseUser(object):
             Actions.MARK   : self._do_mark_document,
             Actions.UTTERANCE: self._do_utterance,
             Actions.CSRP: self._do_csrp,
-            Actions.RESPONSE: self._do_response,
+            Actions.RESPONSE: self._do_assess_response,
             Actions.MARKRESPONSE: self._do_mark_response,
             Actions.STOP: self._do_stop
         }
@@ -120,7 +120,7 @@ class SimulatedBaseUser(object):
         # raise a not implemented error
         raise NotImplementedError("Method not implemented")
     
-    def _do_response(self):
+    def _do_assess_response(self):
         # raise a not implemented error
         raise NotImplementedError("Method not implemented")
     
@@ -168,7 +168,7 @@ class SimulatedBaseUser(object):
         # raise a not implemented error
         raise NotImplementedError("Method not implemented")
 
-    def _after_response(self):
+    def _after_assess_response(self):
         # raise a not implemented error
         raise NotImplementedError("Method not implemented")
     

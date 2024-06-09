@@ -77,10 +77,13 @@ class ConversationalFixedCostLogger(BaseLogger):
         Includes additional details in the message such as the total elapsed time, and maximum time available to the user after the action has been processed.
         """
         log_entry_mapper = {
-            Actions.RESPONSE  : kwargs.get('utterance'),
+            Actions.START  : "START",
+            Actions.STOP   : "STOP",
+            Actions.UNKNOWN: "UNKNOWN",
+            Actions.UTTERANCE  : kwargs.get('utterance'),
             Actions.CSRP   : kwargs.get('status'),
-            Actions.RESPONSE    : "{0} {1}".format(kwargs.get('status')),
-            Actions.MARKRESPONSE  : "{0} {1}".format(kwargs.get('status')),
+            Actions.RESPONSE    : "{0}".format(kwargs.get('status')),
+            Actions.MARKRESPONSE  : "{0}".format(kwargs.get('status')),
         }
         
         base = super(ConversationalFixedCostLogger, self)._report(action, **kwargs)
