@@ -110,5 +110,5 @@ class BaseLogger(object):
     #    """
     #    pass
     
-    def __log_unknown_action(self):
-        self._report('UNKNOWN ACTION')
+    def __log_unknown_action(self, **kwargs):
+        self._report(Actions.UNKNOWN, **kwargs)
