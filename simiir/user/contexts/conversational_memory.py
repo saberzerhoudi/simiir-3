@@ -23,16 +23,8 @@ class ConversationalMemory(Memory):
         """
         Several instance variables here to track the different aspects of the search process.
         """
-        self._search_interface = search_interface
-        self._output_controller = output_controller
-        self.topic = topic
+        super(ConversationalMemory, self).__init__(search_interface, output_controller, topic)
         
-        self._actions = []                       # A list of all of the actions undertaken by the simulated user in chronological order.
-        self._documents_examined = []            # Documents that have been previously examined for the current query.
-        self._all_documents_examined = []        # A list of all documents examined throughout the search session.
-        self._relevant_documents = []            # All documents marked relevant throughout the search session.
-        self._irrelevant_documents = []          # All documents marked irrelevant throughout the search session.
-     
         self._last_utterance = None                  # The Utterance object that was issued.
         self._last_response = None                # Response for the utterance.
         self._last_csrp_impression = None        # Response for the last Conversational SERP impression upon the searcher
@@ -48,15 +40,7 @@ class ConversationalMemory(Memory):
         self._responses_examined = []
         self._relevant_responses = []
 
-        self.action_mappings = {
-            Actions.UTTERANCE:   self._set_utterance_action,
-            Actions.CSRP:    self._set_csrp_action,
-            Actions.RESPONSE: self._set_response_action,
-            Actions.MARKRESPONSE:    self._set_mark_response_action,
-            Actions.STOP:     self._set_stop_action,
-        }
-        
-    
+
     def report(self):
         """
         Returns basic statistics held within the search context at the time of calling.
@@ -90,7 +74,6 @@ class ConversationalMemory(Memory):
         This method is key - depending on the action that is passed to it, the relevant method handling the tidying up for that action is called.
         This is the publicly exposed method for recording doing some action.
         """
-
         if self.action_mappings[action]:
             self._actions.append(action)
             self.action_mappings[action]()

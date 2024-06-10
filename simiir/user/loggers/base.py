@@ -21,6 +21,7 @@ class BaseLogger(object):
             Actions.CSRP   : self._log_csrp,
             Actions.RESPONSE: self._log_assess_response,
             Actions.MARKRESPONSE: self._log_mark_response,
+            Actions.START: self._log_start,
             Actions.STOP: self._log_stop
         }
     
@@ -34,7 +35,6 @@ class BaseLogger(object):
             self.action_mapping[action_name](**kwargs)
         else:
             self.__log_unknown_action(action_name)
-    
     
     def get_last_query_time(self):
         return 1
@@ -55,6 +55,10 @@ class BaseLogger(object):
         If the progress of the simulation cannot be determined, return None.
         """
         return None
+    
+    def start_logging(self):
+        self._log_start()
+        self._stop = False
     
     
     def is_finished(self):
@@ -145,7 +149,11 @@ class BaseLogger(object):
 
     def _log_stop(self, **kwargs):
         self._stop = True
-        self._report('STOP')
+        self._report(Actions.STOP, **kwargs)
+
+    def _log_start(self, **kwargs):
+        self._stop = False
+        self._report(Actions.START, **kwargs)
     
-    def __log_unknown_action(self):
-        self._report('UNKNOWN ACTION')
+    def __log_unknown_action(self, **kwargs):
+        self._report(Actions.UNKNOWN, **kwargs)
