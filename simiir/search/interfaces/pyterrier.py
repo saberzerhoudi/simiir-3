@@ -52,6 +52,12 @@ class PyTerrierSearchInterface(BaseSearchInterface):
         elif wmodel is not None: self.__engine = pt.BatchRetrieve(self.__index, wmodel, controls=controls, properties=properties)
         else: self.__engine = None
 
+    def set_wmodel(self, wmodel : str, controls : dict = None, properties : dict = None):
+        import pyterrier as pt
+        if not pt.started():
+            pt.init()
+        self.__engine = pt.BatchRetrieve(self.__index, wmodel=wmodel, controls=controls, properties=properties)
+
     @classmethod
     def from_dataset(cls, 
                      dataset : str, 

@@ -23,7 +23,7 @@ class Terrier(Engine):
             self.__index = pt.IndexFactory.of(index_ref, memory=memory)
         except Exception as e:
             msg = "Could not open Terrier index from: " + str(index_ref)
-            raise EngineConnectionException(self.name, msg)
+            raise EngineConnectionException(self.name, msg, e)
         self.__reader = self.__index.getMetaIndex()
         self.__engine = pt.BatchRetrieve(self.__index, wmodel=wmodel, controls=controls, properties=properties) if wmodel else None 
     
@@ -41,10 +41,7 @@ class Terrier(Engine):
         self.__engine = pt.BatchRetrieve(self.__index, wmodel=wmodel, controls=controls, properties=properties)
 
     def __parse_query_terms(self, query):
-        if not query.top:
-            query.top = 10
-
-        if query.top < 1:
+        if not query.top or query.top < 1:
             query.top = 10
     
     @staticmethod

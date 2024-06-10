@@ -49,6 +49,9 @@ class PyTerrierDenseInterface(PyTerrierInterface):
         model = HgfBiEncoder.from_pretrained(model_name_or_path, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
         self.__engine = model >> index % 1000
     
+    def set_wmodel(self, wmodel : str, controls : dict = None, properties : dict = None):
+        raise NotImplementedError("This method is not supported for this class")
+    
     @classmethod
     def from_dataset(cls, 
                      index_or_dir : Union[str, Any], 
@@ -115,14 +118,25 @@ class PyterrierReRankerInterface(PyTerrierInterface):
         import pyterrier as pt
         if not pt.started():
             pt.init()
+        
+        self.rerank_depth = rerank_depth
+        self.index_text_field = index_text_field
+        self.text_field = text_field
 
         if isinstance(model_or_path, str):
             log.warning("This class assumes the huggingface model is a Bi-Encoder style encoder, if not, this will fail")
             from pyterrier_dr import HgfBiEncoder
-            model = HgfBiEncoder.from_pretrained(model_or_path, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
-        else: model = model_or_path
-        assert issubclass(pt.Transformer, model), "Model must be a PyTerrier object"
-        self.__engine = self.__engine % rerank_depth >> pt.text.get_text(self.__index, index_text_field) >> model
+            self.model = HgfBiEncoder.from_pretrained(model_or_path, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
+        else: self.model = model_or_path
+        assert issubclass(pt.Transformer, self.model), "Model must be a PyTerrier object"
+        self.__engine = self.__engine % self.rerank_depth >> pt.text.get_text(self.__index, index_text_field) >> self.model
+
+    def set_wmodel(self, wmodel : str, controls : dict = None, properties : dict = None):
+        import pyterrier as pt
+        if not pt.started():
+            pt.init()
+        super().set_wmodel(wmodel, controls, properties)
+        self.__engine = self.__engine % self.rerank_depth >> pt.text.get_text(self.__index, self.index_text_field) >> self.model
 
     @classmethod
     def from_dataset(cls, 
