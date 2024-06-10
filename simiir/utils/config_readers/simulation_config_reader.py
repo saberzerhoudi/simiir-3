@@ -123,7 +123,7 @@ class SimulationConfigReader(BaseConfigReader):
         else:
             check_topic(topics)
         
-        # Users
+        # Users        
         users = self._config_dict['users']['user']
         
         if type(users) == list:

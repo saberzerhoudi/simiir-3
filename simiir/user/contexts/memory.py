@@ -87,6 +87,18 @@ class Memory(object):
         self.query_limit = 0                     # 0 - no limit on the number issued. Otherwise, the number of queries is capped
         self.relevance_revision = 0              # 0 - no revising of relevance judgements, 1- updates the relevance judgement of snippets
         
+        self.action_mappings = {
+            Actions.UTTERANCE:      self._set_utterance_action,
+            Actions.CSRP:           self._set_csrp_action,
+            Actions.RESPONSE:       self._set_response_action,
+            Actions.MARKRESPONSE:   self._set_mark_response_action,
+            Actions.STOP:           self._set_stop_action,
+            Actions.QUERY:          self._set_query_action,
+            Actions.SERP:           self._set_serp_action,
+            Actions.SNIPPET:        self._set_snippet_action,
+            Actions.DOC:            self._set_assess_document_action,
+            Actions.MARK:           self._set_mark_action
+        }
     
     @property
     def relevance_revision(self):
@@ -155,17 +167,10 @@ class Memory(object):
         This method is key - depending on the action that is passed to it, the relevant method handling the tidying up for that action is called.
         This is the publicly exposed method for doing some action.
         """
-        action_mappings = {
-            Actions.QUERY:   self._set_query_action,
-            Actions.SERP:    self._set_serp_action,
-            Actions.SNIPPET: self._set_snippet_action,
-            Actions.DOC:     self._set_assess_document_action,
-            Actions.MARK:    self._set_mark_action
-        }
         
-        if action_mappings[action]:
+        if self.action_mappings[action]:
             self._actions.append(action)
-            action_mappings[action]()
+            self.action_mappings[action]()
     
     def _set_query_action(self):
         """
@@ -210,7 +215,47 @@ class Memory(object):
         
         # Sets the current document
         self._current_document = self._search_interface.get_document(snippet.id)
-        
+
+    def _set_response_action(self):
+        """
+        Method called when a response is examined.
+        Any modifications to the search context can be undertaken here.
+        """
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+
+    def _set_mark_response_action(self):
+        """
+        Called when the currently examined response is to be marked as relevant.
+        """
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _set_stop_action(self):
+        """
+        Called when the simulated user wishes to stop.
+        """
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _set_utterance_action(self):
+        """
+        Called when an utterance is issued.
+        """
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    def _set_csrp_action(self):
+        """
+        Method called when a Conversational SERP is initially examined.
+        Any modifications to the search context can be undertaken here.
+        """
+        # raise a not implemented error
+        raise NotImplementedError("Method not implemented")
+    
+    
+
+
     def get_current_snippet(self):
         """
         Returns the current snippet object. Returns None if no query has been issued.

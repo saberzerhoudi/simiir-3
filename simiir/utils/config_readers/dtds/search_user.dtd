@@ -1,8 +1,8 @@
 <!--
-User Configuration DTD
+Search User Configuration DTD
 
 Author: David Maxwell
-Date:   2017-05-02
+Date:   2024-04-20
 -->
 
 <!ELEMENT attribute          (#PCDATA)>
@@ -13,6 +13,7 @@ Date:   2017-05-02
 
 <!ELEMENT userConfiguration  (queryGenerator, textClassifiers, stoppingDecisionMaker, logger, userContext, serpImpression)>
 <!ATTLIST userConfiguration  id CDATA #REQUIRED>
+<!ATTLIST userConfiguration  type CDATA #REQUIRED>
 
 <!ELEMENT queryGenerator     (attribute*)>
 <!ATTLIST queryGenerator     class CDATA #REQUIRED>

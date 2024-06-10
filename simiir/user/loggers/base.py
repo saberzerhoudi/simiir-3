@@ -10,6 +10,20 @@ class BaseLogger(object):
         self._output_controller = output_controller
         self._user_context = user_context
         self._queries_exhausted = False
+        self._stop = False
+        self.action_mapping = {
+            Actions.QUERY  : self._log_query,
+            Actions.SERP   : self._log_serp,
+            Actions.SNIPPET: self._log_snippet,
+            Actions.DOC    : self._log_assess,
+            Actions.MARK   : self._log_mark_document,
+            Actions.UTTERANCE: self._log_utterance,
+            Actions.CSRP   : self._log_csrp,
+            Actions.RESPONSE: self._log_assess_response,
+            Actions.MARKRESPONSE: self._log_mark_response,
+            Actions.START: self._log_start,
+            Actions.STOP: self._log_stop
+        }
     
     def log_action(self, action_name, **kwargs):
         """
@@ -17,36 +31,23 @@ class BaseLogger(object):
         Import loggers.Actions to use the appropriate event type when determining the action.
         Use additional keywords to provide additional arguments to the logger.
         """
-        action_mapping = {
-            Actions.QUERY  : self._log_query,
-            Actions.SERP   : self._log_serp,
-            Actions.SNIPPET: self._log_snippet,
-            Actions.DOC    : self._log_assess,
-            Actions.MARK   : self._log_mark_document,
-        }
-        
-        if action_mapping[action_name]:
-            action_mapping[action_name](**kwargs)
+        if self.action_mapping[action_name]:
+            self.action_mapping[action_name](**kwargs)
         else:
             self.__log_unknown_action(action_name)
     
-    @abc.abstractmethod
     def get_last_query_time(self):
         return 1
     
-    @abc.abstractmethod
     def get_last_interaction_time(self):
         return 1
     
-    @abc.abstractmethod
     def get_last_marked_time(self):
         return 1
     
-    @abc.abstractmethod
     def get_last_relevant_snippet_time(self):
         return 1
     
-    @abc.abstractmethod
     def get_progress(self):
         """
         Abstract method. Returns a value between 0 and 1 representing the progress of the simulation.
@@ -55,14 +56,19 @@ class BaseLogger(object):
         """
         return None
     
-    @abc.abstractmethod
+    def start_logging(self):
+        self._log_start()
+        self._stop = False
+    
+    
     def is_finished(self):
         """
         Abstract method, only returns indication as to whether the list of queries has been exhausted.
         Extend this method to include additional checks to see if the user has reached the limit to what they can do.
         Depending on the implemented logger, this could be the number of queries issued, a time limit, etc...
         """
-        return self._queries_exhausted
+        # return if the queries have been exhausted or stop is true
+        return self._queries_exhausted or self._stop
     
     def queries_exhausted(self):
         """
@@ -78,7 +84,6 @@ class BaseLogger(object):
         """
         return "ACTION {0} ".format(action)
     
-    @abc.abstractmethod
     def _log_query(self, **kwargs):
         """
         Abstract method. When inheriting from this class, implement this method to appropriately handle a query event.
@@ -86,7 +91,6 @@ class BaseLogger(object):
         """
         pass
     
-    @abc.abstractmethod
     def _log_serp(self, **kwargs):
         """
         Abstract method. When inheriting from this class, implement this method to appropriately handle a SERP examination.
@@ -94,7 +98,6 @@ class BaseLogger(object):
         """
         pass
     
-    @abc.abstractmethod
     def _log_snippet(self, **kwargs):
         """
         Abstract method. When inheriting from this class, implement this method to appropriately handle the examination of a snippet.
@@ -102,7 +105,6 @@ class BaseLogger(object):
         """
         pass
     
-    @abc.abstractmethod
     def _log_assess(self, **kwargs):
         """
         Abstract method. When inheriting from this class, implement this method to appropriately handle assessing a document.
@@ -110,13 +112,48 @@ class BaseLogger(object):
         """
         pass
     
-    @abc.abstractmethod
     def _log_mark_document(self, **kwargs):
         """
         Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of marking a document.
         Returns None.
         """
         pass
+
+    def _log_utterance(self, **kwargs):
+        """
+        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of utterance.
+        Returns None.
+        """
+        pass
+
+    def _log_csrp(self, **kwargs):
+        """
+        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of examining a CSRP.
+        Returns None.
+        """
+        pass
+
+    def _log_assess_response(self, **kwargs):
+        """
+        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of assessing a response.
+        Returns None.
+        """
+        pass
+
+    def _log_mark_response(self, **kwargs):
+        """
+        Abstract method. When inheriting from this class, implement this method to appropriately handle the costs of marking a response.
+        Returns None.
+        """
+        pass
+
+    def _log_stop(self, **kwargs):
+        self._stop = True
+        self._report(Actions.STOP, **kwargs)
+
+    def _log_start(self, **kwargs):
+        self._stop = False
+        self._report(Actions.START, **kwargs)
     
-    def __log_unknown_action(self):
-        self._report('UNKNOWN ACTION')
+    def __log_unknown_action(self, **kwargs):
+        self._report(Actions.UNKNOWN, **kwargs)

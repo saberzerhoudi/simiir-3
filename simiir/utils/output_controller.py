@@ -107,7 +107,6 @@ class OutputController(object):
             log_file.write(os.linesep)
             user_context_summary = self.__simulation_configuration.user.user_context.report()
             log_file.write(user_context_summary)
-
             log_file.close()
 
     

@@ -1,4 +1,4 @@
-<userConfiguration id="lmadditionaltermsmartuser">
+<userConfiguration id="lmadditionaltermsmartuser" type="SearchUser">
 	
 	<queryGenerator class="AdditionalQueryGenerator">
 		<attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
