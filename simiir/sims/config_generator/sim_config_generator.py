@@ -66,7 +66,7 @@ def tidy_dictionary(dict_repr):
         return ref
     dict_repr['simulation']['topics'] = to_list(dict_repr['simulation']['topics'], 'topic')
     
-    print dict_repr['simulation']['searchInterface']['@class']
+    print(dict_repr['simulation']['searchInterface']['@class'])
     
     dict_repr['simulation']['searchInterface'] = {'class': dict_repr['simulation']['searchInterface']['@class'],
                                                   'attributes': to_list(dict_repr['simulation']['searchInterface'], 'searchInterface')}
@@ -318,7 +318,7 @@ def clear_output_dir():
             if os.path.isfile(file_path):
                 os.unlink(file_path)
         except Exception, e:
-            print e
+            print(e)
     
     if not os.path.exists('output/out'):
         os.makedirs('output/out/')
@@ -329,9 +329,9 @@ def usage(filename):
     """
     Prints the usage to stdout.
     """
-    print "Usage: python {0} <xml_source>".format(filename)
-    print "Where:"
-    print "  <xml_source>: the source XML file from which to generate simulation configuration files. See example.xml."
+    print ("Usage: python {0} <xml_source>".format(filename))
+    print ("Where:")
+    print ("  <xml_source>: the source XML file from which to generate simulation configuration files. See example.xml.")
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and len(sys.argv) < 3:

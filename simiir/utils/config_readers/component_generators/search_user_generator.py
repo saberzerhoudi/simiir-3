@@ -9,12 +9,9 @@ class SearchUserComponentGenerator(BaseComponentGenerator):
         
         self.__simulation_components = simulation_components
         
-        
         # Store the user's ID for easy access.
         self.id = self._config_dict['@id']
         self.type = self._config_dict['@type']
-
-        print(self._config_dict)
 
         # Create the user's query generator.
         self.query_generator = self._get_object_reference(config_details=self._config_dict['queryGenerator'],
