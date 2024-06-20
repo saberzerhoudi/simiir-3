@@ -179,4 +179,3 @@ class SimulatedBaseUser(object):
     def _after_stop(self):
         # raise a not implemented error
         raise NotImplementedError("Method not implemented")
-

@@ -1,0 +1,16 @@
+DEBUG:simuser.search.interfaces.whoosh_interface:Whoosh Index to open: ../example_data/index
+DEBUG:ifind.search.engines.whooshtrec:Whoosh Document index open: ../example_data/index
+DEBUG:ifind.search.engines.whooshtrec:Documents in index: 4622
+DEBUG:ifind.search.engines.whooshtrec:Using all text field
+DEBUG:ifind.search.engines.whooshtrec:OR Query parser created
+DEBUG:ifind.search.engines.whooshtrec:Context Fragmenter with max_chars:200 surround:20
+DEBUG:ifind.search.engines.whooshtrec:Engine Created with: BM25F B=0.75 retrieval model
+DEBUG:ifind.search.engines.whooshtrec:Pinpoint Fragmenter with max_chars:200 surround:40
+DEBUG:simuser.search.interfaces.whoosh_interface:Whoosh Index to open: ../example_data/index
+DEBUG:ifind.search.engines.whooshtrec:Whoosh Document index open: ../example_data/index
+DEBUG:ifind.search.engines.whooshtrec:Documents in index: 4622
+DEBUG:ifind.search.engines.whooshtrec:Using all text field
+DEBUG:ifind.search.engines.whooshtrec:OR Query parser created
+DEBUG:ifind.search.engines.whooshtrec:Context Fragmenter with max_chars:200 surround:20
+DEBUG:ifind.search.engines.whooshtrec:Engine Created with: BM25F B=0.75 retrieval model
+DEBUG:ifind.search.engines.whooshtrec:Pinpoint Fragmenter with max_chars:200 surround:40

@@ -67,8 +67,7 @@ class BasicMarkovUser(object):
         self.__logger = configuration.user.logger
         
         # Initialize the Markov Chain with the transition matrix and states
-        self.__markov_chain = MarkovChain(TRANSITION_MATRIX_PATH, STATES_PATH)
-        
+        self.__markov_chain = MarkovChain(TRANSITION_MATRIX_PATH, STATES_PATH)   
         self.__has_started = False 
    
     def decide_action(self):
@@ -230,4 +229,4 @@ class BasicMarkovUser(object):
         """
         Called when the simulation ends.
         """
-        self.__logger.log_info("Simulation ended.")
+        self.__logger.log_info("Simulation ended.") 
