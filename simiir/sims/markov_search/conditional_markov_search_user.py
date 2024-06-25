@@ -1,0 +1,218 @@
+import numpy as np
+from user.loggers import Actions
+from ifind.search.query import Query
+
+
+# Global variables for paths or matrices
+ACTION_TRANSITION_MATRIX = '../example_model/action_transition_matrix.data'
+QUERY_TRANSITION_MATRIX = '../example_model/query_transition_matrix.data'
+ACTIONS = ['QUERY', 'SERP', 'SNIPPET', 'DOC', 'MARK', 'END']
+QUERIES = ['first_query', 'second_query', 'third_query', 'end_query']
+
+class ConditionalMarkovModel:
+    def __init__(self, action_prob_matrix, query_prob_matrix, actions, queries):
+        """
+        Initializes the Conditional Markov Model with separate matrices for actions and queries.
+        :param action_prob_matrix: A 2D numpy array representing the probabilities of transitioning between actions.
+        :param query_prob_matrix: A 2D numpy array representing the probabilities of transitioning between queries.
+        :param actions: A list of possible actions.
+        :param queries: A list of possible queries.
+        """
+        self.action_prob_matrix = action_prob_matrix
+        self.query_prob_matrix = query_prob_matrix
+        self.actions = actions
+        self.queries = queries
+        self.action_to_index = {action: idx for idx, action in enumerate(actions)}
+        self.query_to_index = {query: idx for idx, query in enumerate(queries)}
+
+    def get_next_action(self, current_action, current_query):
+        """
+        Decides the next action based on the current action and query.
+        """
+        action_idx = self.action_to_index[current_action]
+        query_idx = self.query_to_index[current_query]
+        # Calculate the next action based on the current action and query
+        next_action_probabilities = self.action_prob_matrix[action_idx, :]
+        next_action_index = np.argmax(next_action_probabilities)
+        return self.actions[next_action_index]
+
+    def get_next_query(self, current_action, current_query):
+        """
+        Decides the next query based on the current action and query.
+        """
+        action_idx = self.action_to_index[current_action]
+        query_idx = self.query_to_index[current_query]
+        # Calculate the next query based on the current action and query
+        next_query_probabilities = self.query_prob_matrix[query_idx, :]
+        next_query_index = np.argmax(next_query_probabilities)
+        return self.queries[next_query_index]
+    
+    
+
+class ConditionalMarkovUser(object):
+    """
+    A user model that uses a Conditional Markov Model to decide the next action based on the current action and query.
+    """
+    def __init__(self, configuration):
+        self.__user_context = configuration.user.user_context
+        self.__output_controller = configuration.output
+        self.__logger = configuration.user.logger
+        
+        # Initialize the Conditional Markov Model with the transition matrices for actions and queries
+        self.__markov_model = ConditionalMarkovModel(ACTION_TRANSITION_MATRIX, QUERY_TRANSITION_MATRIX, ACTIONS, QUERIES)
+        self.__has_started = False
+
+    def decide_action(self):
+        """
+        Decides the next action based on the Conditional Markov Model.
+        """
+        if not self.__has_started:
+            current_action = 'None'
+            current_query = self.__user_context.get_current_query()
+            self.__has_started = True
+        else:
+            current_action = self.__user_context.get_last_action()
+            current_query = self.__user_context.get_current_query()
+
+        # Decide the next action based on the current action and query
+        next_action = self.__markov_model.get_next_action(current_action, current_query)
+        
+        # Execute the next action
+        action_method = self.__get_action_method(next_action)
+        if action_method:
+            action_method()
+
+    def __get_action_method(self, action):
+        """
+        Maps an action to the corresponding method.
+        """
+        action_methods = {
+            'QUERY': self.__do_query,
+            'SERP': self.__do_serp,
+            'SNIPPET': self.__do_snippet,
+            'DOC': self.__do_assess_document,
+            'MARK': self.__do_mark_document,
+            'END': self.__do_stop,
+            'None': self.__do_query,  
+        }
+        return action_methods.get(action, None)
+
+    def __do_query(self):
+        """
+        Called when the simulated user wishes to issue another query.
+        This works by calling the search context for the subsequent query text, and is then issued to the search interface by the search context on behalf of the user.
+        If no further queries are available, the logger is told of this - and the simulation will then stop at the next iteration.
+        """
+        # update the query generator with the latest search context.
+        self.__query_generator.update_model(self.__user_context)
+
+        # Get a query from the generator.
+        query_text = self.__query_generator.get_next_query(self.__user_context)
+        
+        if query_text:
+            self.__user_context.add_issued_query(query_text)  # Can also supply page number and page lengths here.
+            self.__logger.log_action(Actions.QUERY, query=query_text)
+            self.__output_controller.log_query(query_text)
+            
+            return True
+        
+        self.__output_controller.log_info(info_type="OUT_OF_QUERIES")
+        # Tells the logger that there are no remaining queries; the logger will then stop the simulation.
+        self.__logger.queries_exhausted()
+        return False
+    
+    def __do_serp(self):
+        """
+        Called when the simulated user wishes to examine a SERP - the "initial glance" - after issuing a query.
+        If the SERP has no results, we continue with the next action - otherwise we will always go and look at said SERP.
+        """
+        if self.__user_context.get_current_results_length() == 0:
+            self.__logger.log_action(Actions.SERP, status="EMPTY_SERP")
+            return False  # No results present; return False (we don't continue with this SERP)
+        
+        # Code updates on 2017-09-28 for refactoring.
+        # Simplified this portion -- the SERP impression component now only returns a True/False value.
+        is_serp_attractive = self.__serp_impression.is_serp_attractive()
+        self.__user_context.add_serp_impression(is_serp_attractive)  # Update the search context.
+        
+        if is_serp_attractive:
+            self.__logger.log_action(Actions.SERP, status="EXAMINE_SERP")
+        else:
+            self.__logger.log_action(Actions.SERP, status="IGNORE_SERP")
+        
+        return is_serp_attractive
+       
+    def __do_snippet(self):
+        """
+        Called when the user needs to make the decision whether to examine a snippet or not.
+        The logic within this method supports previous observations of the same document, and whether the text within the snippet appears to be relevant.
+        """
+        judgment = False
+        snippet = self.__user_context.get_current_snippet()
+        self.__user_context.increment_serp_position()
+        
+        if self.__user_context.get_document_observation_count(snippet) > 0:
+            # This document has been previously seen; so we ignore it. But the higher the count, cumulated credibility could force us to examine it?
+            self.__logger.log_action(Actions.SNIPPET, status="SEEN_PREVIOUSLY", snippet=snippet)
+        
+        else:
+            # This snippet has not been previously seen; check quality of snippet. Does it show some form of relevance?
+            # If so, we return True - and if not, we return False, which moves the simulator to the next step.
+            
+            #print 'snippet', snippet.doc_id, self.__snippet_classifier.is_relevant(snippet)
+            
+            if self.__snippet_classifier.is_relevant(snippet):
+                snippet.judgment = 1
+                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", snippet=snippet)
+                judgment = True
+            else:
+                snippet.judgment = 0
+                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", snippet=snippet)
+        
+            self.__snippet_classifier.update_model(self.__user_context)
+        return judgment
+    
+    def __do_assess_document(self):
+        """
+        Called when a document is to be assessed.
+        """
+        judgment = False
+        if self.__user_context.get_last_query():
+            document = self.__user_context.get_current_document()
+            self.__logger.log_action(Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.doc_id)
+            
+            #print 'document', document.doc_id, self.__document_classifier.is_relevant(document)
+            
+            if self.__document_classifier.is_relevant(document):
+                document.judgment = 1
+                #self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
+                self.__user_context.add_relevant_document(document)
+                judgment = True
+            else:
+                document.judgment = 0
+                self.__user_context.add_irrelevant_document(document)
+                #self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
+                judgment = False
+
+            self.__document_classifier.update_model(self.__user_context)
+        
+        return judgment
+    
+    def __do_mark_document(self):
+        """
+        The outcome of marking a document as relevant. At this stage, the user has decided that the document is relevant; hence True can be the only result.
+        """
+        judgement_message = {0: 'CONSIDERED_NOT_RELEVANT', 1: 'CONSIDERED_RELEVANT'}
+        
+        document = self.__user_context.get_current_document()
+        
+        self.__logger.log_action(Actions.MARK, status=judgement_message[document.judgment], doc_id=document.doc_id)
+        
+        #self.__logger.log_action(Actions.MARK, doc_id=document.doc_id)
+        return True
+    
+    def __do_stop(self):
+        """
+        Called when the simulation ends.
+        """
+        self.__logger.log_info("Simulation ended.") 
