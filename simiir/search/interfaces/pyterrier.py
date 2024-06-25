@@ -1,5 +1,4 @@
 from simiir.search.interfaces.base import BaseSearchInterface
-from simiir.search.interfaces import Document
 from ifind.search.engines.terrier import Terrier
 from typing import Any, Optional, Union
 import logging
@@ -36,10 +35,6 @@ class PyTerrierSearchInterface(BaseSearchInterface):
                  memory : Optional[bool] = False,
                  ):
         super().__init__()
-        import pyterrier as pt
-        if not pt.started():
-            pt.init()
-
         self.__engine = Terrier(index_ref=index_or_dir, 
                                 wmodel=wmodel, 
                                 controls=controls, 
@@ -47,7 +42,6 @@ class PyTerrierSearchInterface(BaseSearchInterface):
                                 text_field=text_field,
                                 pipeline=pipeline,
                                 memory=memory)
-
 
     def issue_query(self, query, top=100):
         assert self.__engine is not None, "No engine defined"
@@ -59,6 +53,4 @@ class PyTerrierSearchInterface(BaseSearchInterface):
         return response
 
     def get_document(self, document_id):
-        assert self.__engine.__reader is not None, "No reader defined"
-        content =  self.__engine.__reader.getDocument("docno", document_id)
-        return Document(id=document_id, content=content, doc_id=document_id)
+        return self.__engine.get_document(document_id)

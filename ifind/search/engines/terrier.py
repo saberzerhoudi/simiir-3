@@ -1,6 +1,7 @@
 from typing import Any, Optional, Union
 import logging
 from ifind.search.engine import Engine
+from simiir.search.interfaces import Document
 from ifind.search.response import Response
 from ifind.search.exceptions import EngineConnectionException
 
@@ -21,6 +22,7 @@ class Terrier(Engine):
         if not pt.started():
             pt.init()
         self.index_ref = index_ref
+        self.text_field = text_field
         try:
             self.__index = pt.IndexFactory.of(index_ref, memory=memory) if isinstance(index_ref, str) else index_ref
         except Exception as e:
@@ -58,6 +60,14 @@ class Terrier(Engine):
                    text_field=text_field, 
                    memory=memory)
 
+    def get_document(self, document_id):
+        idx = self.__reader.getDocument('docno', document_id)
+        content = self.__reader.getItem(self.text_field, int(idx))
+        try: title = self.__reader.getItem('title', int(idx))
+        except: title = "NA"
+
+        return Document(id=document_id, content=content, doc_id=document_id, title=title)
+
     def set_engine(self, engine : Any):
         import pyterrier as pt
         if not pt.started():
@@ -74,6 +84,10 @@ class Terrier(Engine):
     def __parse_query_terms(self, query):
         if not query.top or query.top < 1:
             query.top = 10
+
+        terms = query.terms
+        if isinstance(terms, bytes):
+            query.terms = terms.decode('utf-8')
     
     @staticmethod
     def _parse_terrier_response(response):
@@ -93,7 +107,8 @@ class Terrier(Engine):
                                 rank=rank, 
                                 docid=docid, 
                                 score=score,
-                                source=source)
+                                source=source,
+                                whooshid=docid)
         
         output.result_total = len(response)
         return output
@@ -103,9 +118,6 @@ class Terrier(Engine):
         pagelen = query.top
         if self.__engine:
             terms = query.terms
-            if isinstance(terms, bytes):
-                terms = terms.decode('utf-8')
-            print(terms)
             response = self.__engine.search(terms)
             response = response.sort_values('score', ascending=False).head(pagelen)
             response['source'] = self.index_ref

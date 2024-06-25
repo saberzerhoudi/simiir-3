@@ -25,16 +25,6 @@ Date:   2015-09-09
 
         <user configurationFile="../example_sims/users/trec_user.xml" />
         <user configurationFile="../example_sims/users/perfect_trec_user.xml" />
-        <user configurationFile="../example_sims/users/smart_user.xml" />
-        <user configurationFile="../example_sims/users/lm_smart_user_with_updating.xml" />
-		<user configurationFile="../example_sims/users/lm_smart_user_with_background_updating.xml" />
-        <user configurationFile="../example_sims/users/fixed_depth_user.xml" />
-        <user configurationFile="../example_sims/users/random_user.xml" />
-        <user configurationFile="../example_sims/users/ift_user.xml" />
-		<user configurationFile="../example_sims/users/single_term_query_user.xml" />
-		<user configurationFile="../example_sims/users/bi_term_query_user.xml" />
-		<user configurationFile="../example_sims/users/tri_term_query_user.xml" />
-		<user configurationFile="../example_sims/users/additional_term_query_user.xml" />
 	</users>
 	
 	<searchInterface class="PyTerrierSearchInterface">
@@ -42,6 +32,7 @@ Date:   2015-09-09
         This is the search interface that the simulated users will interact with
         -->
 		<attribute name="index_or_dir" type="string" value="../example_data/aquaint.terrier" is_argument="true" />
+		<attribute name="text_field" type="string" value="text" is_argument="true" />
         <attribute name="wmodel" type="string" value="BM25" is_argument="true" />
         <attribute name="memory" type="boolean" value="true" is_argument="true" />
 	</searchInterface>
