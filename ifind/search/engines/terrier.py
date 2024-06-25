@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Optional, Union
 import logging
 from ifind.search.engine import Engine
 from ifind.search.response import Response
@@ -12,6 +12,8 @@ class Terrier(Engine):
                  wmodel : str = None,
                  controls : dict = None,
                  properties : dict = None,
+                 text_field : Optional[str] = 'body', 
+                 pipeline : Optional[Any] = None,
                  memory : bool = False,
                  **kwargs):
         Engine.__init__(self, **kwargs)
@@ -20,13 +22,42 @@ class Terrier(Engine):
             pt.init()
         self.index_ref = index_ref
         try:
-            self.__index = pt.IndexFactory.of(index_ref, memory=memory)
+            self.__index = pt.IndexFactory.of(index_ref, memory=memory) if isinstance(index_ref, str) else index_ref
         except Exception as e:
             msg = "Could not open Terrier index from: " + str(index_ref)
             raise EngineConnectionException(self.name, msg, e)
         self.__reader = self.__index.getMetaIndex()
-        self.__engine = pt.BatchRetrieve(self.__index, wmodel=wmodel, controls=controls, properties=properties) if wmodel else None 
+        if self.__reader is None: log.warning("No reader defined, cannot fetch document text, doing so will result in an error")
+        for k in ['docno', text_field]:
+            if k not in self.__reader.getKeys():
+                log.warning(f"Essential MetaData {k} not found in reader, cannot fetch document text, doing so will result in an error")
+                self.__reader = None
+        if pipeline is not None: self.__engine = pipeline
+        elif wmodel is not None: self.__engine = pt.BatchRetrieve(self.__index, wmodel=wmodel, controls=controls, properties=properties)
+        else: self.__engine = None
     
+    @classmethod
+    def from_dataset(cls, 
+                     dataset : str, 
+                     variant : str = 'terrier_stemmed_text', 
+                     pipeline : str = None,
+                     wmodel : str = None, 
+                     controls : dict = None, 
+                     properties : dict = None, 
+                     text_field : str = 'body', 
+                     memory : bool = False):
+        import pyterrier as pt
+        if not pt.started():
+            pt.init()
+        index_ref = pt.get_dataset(dataset).get_index(variant=variant)
+        return cls(index_ref, 
+                   pipeline=pipeline,
+                   wmodel=wmodel, 
+                   controls=controls, 
+                   properties=properties, 
+                   text_field=text_field, 
+                   memory=memory)
+
     def set_engine(self, engine : Any):
         import pyterrier as pt
         if not pt.started():
@@ -46,17 +77,17 @@ class Terrier(Engine):
     
     @staticmethod
     def _parse_terrier_response(response):
-        output = Response(response.query.iloc[0])
+        output = Response(response['query'].iloc[0])
         for i in range(len(response)):
             row = response.iloc[i]
             title = getattr(row, 'title', "Untitled")
             url = getattr(row, 'url', row.docno)
             content = getattr(row, 'text', None) 
-            rank = row.rank + 1
+            rank = row['rank'] + 1
             docid = row.docno 
             score = row.score
             source = row.source
-            response.add_result(title=title, 
+            output.add_result(title=title, 
                                 url=url, 
                                 content=content,
                                 rank=rank, 
@@ -71,7 +102,11 @@ class Terrier(Engine):
         response = None
         pagelen = query.top
         if self.__engine:
-            response = self.__engine.transform(query.terms)
+            terms = query.terms
+            if isinstance(terms, bytes):
+                terms = terms.decode('utf-8')
+            print(terms)
+            response = self.__engine.search(terms)
             response = response.sort_values('score', ascending=False).head(pagelen)
             response['source'] = self.index_ref
             if self.__reader:
@@ -101,7 +136,6 @@ class Terrier(Engine):
 
         """
         self.__parse_query_terms(query)
-
         return self._request(query)
 
 

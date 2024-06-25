@@ -1,10 +1,14 @@
-from simiir.search.interfaces.pyterrier import PyTerrierInterface
+from simiir.search.interfaces.pyterrier import PyTerrierSearchInterface
 from typing import Union, Any
 import logging
 
 log = logging.getLogger('simuser.search.interfaces.pyterrier')
 
-class PyTerrierDenseInterface(PyTerrierInterface):
+'''
+WIP
+'''
+
+class PyTerrierDenseInterface(PyTerrierSearchInterface):
     """
     Interface for using a Dense Retrieval model with PyTerrier
 
@@ -70,7 +74,7 @@ class PyTerrierDenseInterface(PyTerrierInterface):
         meta_index_ref = pt.get_dataset(dataset).get_index(variant=variant)
         return cls(index_or_dir, model_name_or_path, meta_index_ref, index_text_field=meta_index_text_field, memory=memory, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
 
-class PyterrierReRankerInterface(PyTerrierInterface):
+class PyterrierReRankerInterface(PyTerrierSearchInterface):
     """
     Interface for using a Dense Retrieval model with PyTerrier for re-ranking
 
