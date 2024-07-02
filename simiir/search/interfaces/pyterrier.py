@@ -30,7 +30,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
         Whether to load the index into memory
     """
     def __init__(self, 
-                 index_or_dir : Union[str, Any], 
+                 index_or_dir : Optional[Union[str, Any]] = None, 
                  dataset : Optional[str] = None,
                  variant : Optional[str] = 'terrier_stemmed_text',
                  pipeline : Optional[Any] = None,
@@ -40,6 +40,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
                  text_field : Optional[str] = 'body', 
                  memory : Optional[bool] = False,
                  ):
+        assert index_or_dir is not None or dataset is not None, "No index or dataset defined"
         super().__init__()
         self.__engine = Terrier(index_ref=index_or_dir, 
                                 dataset=dataset,
