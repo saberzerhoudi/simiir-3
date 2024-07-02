@@ -19,6 +19,10 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
         Reference to AutoModel HuggingFace compatible model or path to model
     meta_index : str or Any
         Reference to PyTerrier Index
+    dataset : str
+        PyTerrier dataset with pre-built index
+    variant : str
+        Variant of the dataset index to use
     index_text_field : str
         Field in the index to use as the text field
     memory : bool
@@ -87,6 +91,10 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
     Parameters:
     model_name_or_path : str
         Reference to AutoModel HuggingFace compatible model or path to model
+    dataset : str
+        PyTerrier dataset with pre-built index
+    variant : str
+        Variant of the dataset index to use
     meta_index : str or Any
         Reference to PyTerrier Index
     wmodel : str
@@ -113,6 +121,8 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
     def __init__(self, 
                  model_or_path : Union[str, Any], 
                  meta_index : str, 
+                 dataset : str = None,
+                 variant : str = 'terrier_stemmed_text',
                  wmodel : str = 'BM25',
                  controls : dict = None,
                  properties : dict = None,
@@ -124,7 +134,14 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
                  device=None,
                  rerank_depth : int = 100
                  ):
-        super().__init__(meta_index, wmodel=wmodel, controls=controls, properties=properties, text_field=index_text_field, memory=memory)
+        super().__init__(meta_index, 
+                         dataset=dataset,
+                         variant=variant,
+                         wmodel=wmodel, 
+                         controls=controls, 
+                         properties=properties, 
+                         text_field=index_text_field, 
+                         memory=memory)
         import pyterrier as pt
         if not pt.started():
             pt.init()
