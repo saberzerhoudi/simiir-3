@@ -116,7 +116,7 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
     """
     def __init__(self, 
                  model_or_path : Union[str, Any], 
-                 meta_index : str, 
+                 meta_index : str = None, 
                  dataset : str = None,
                  variant : str = 'terrier_stemmed_text',
                  wmodel : str = 'BM25',

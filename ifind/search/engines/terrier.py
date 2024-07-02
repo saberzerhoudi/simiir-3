@@ -38,12 +38,14 @@ class Terrier(Engine):
             except Exception as e:
                 msg = "Could not open Terrier index from: " + str(index_ref)
                 raise EngineConnectionException(self.name, msg, e)
+            
         self.__reader = self.__index.getMetaIndex()
         if self.__reader is None: log.warning("No reader defined, cannot fetch document text, doing so will result in an error")
         for k in ['docno', text_field]:
             if k not in self.__reader.getKeys():
                 log.warning(f"Essential MetaData {k} not found in reader, cannot fetch document text, doing so will result in an error")
                 self.__reader = None
+                
         if pipeline is not None: self.__engine = pipeline
         elif wmodel is not None: self.__engine = pt.BatchRetrieve(self.__index, wmodel=wmodel, controls=controls, properties=properties)
         else: self.__engine = None
