@@ -89,21 +89,21 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
         Field for the model to use as the text field
     verbose : bool
         Whether to output verbose logging
-    device : None
+    device : str or Any
         Device to use for the model
     """
     def __init__(self, 
                  index_or_dir : Union[str, Any], 
                  model_name_or_path : str, 
                  meta_index : Union[str, Any], 
-                 dataset : str = None,
-                 variant : str = 'terrier_stemmed_text',
-                 index_text_field : str = 'body', 
-                 memory=False, 
-                 batch_size=32, 
-                 text_field='text', 
-                 verbose=False, 
-                 device=None 
+                 dataset : Optional[str] = None,
+                 variant : Optional[str] = 'terrier_stemmed_text',
+                 index_text_field : Optional[str] = 'body', 
+                 memory : Optional[bool] = False, 
+                 batch_size : Optional[int] = 32, 
+                 text_field : Optional[str] = 'text', 
+                 verbose : Optional[bool] = False, 
+                 device : Optional[Union[str, Any]] = None 
                  ):
         super().__init__(meta_index, 
                          text_field=index_text_field, 
@@ -176,19 +176,19 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
     """
     def __init__(self, 
                  model_or_path : Union[str, Any], 
-                 meta_index : str = None, 
-                 dataset : str = None,
-                 variant : str = 'terrier_stemmed_text',
-                 wmodel : str = 'BM25',
-                 controls : dict = None,
-                 properties : dict = None,
-                 index_text_field : str = 'body', 
-                 memory=False, 
-                 batch_size=32, 
-                 text_field='text', 
-                 verbose=False, 
-                 device=None,
-                 rerank_depth : int = 100
+                 meta_index : Optional[str] = None, 
+                 dataset : Optional[str] = None,
+                 variant : Optional[str] = 'terrier_stemmed_text',
+                 wmodel : Optional[str] = 'BM25',
+                 controls : Optional[dict] = None,
+                 properties : Optional[dict] = None,
+                 index_text_field : Optional[str] = 'body', 
+                 memory : Optional[bool] = False, 
+                 batch_size : Optional[int] = 32, 
+                 text_field : Optional[str] = 'text', 
+                 verbose : Optional[bool] = False, 
+                 device : Optional[Union[str, Any]] = None,
+                 rerank_depth : Optional[int] = 100
                  ):
         super().__init__(meta_index, 
                          dataset=dataset,
