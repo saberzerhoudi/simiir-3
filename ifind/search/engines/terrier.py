@@ -15,6 +15,8 @@ class Terrier(Engine):
                  properties : dict = None,
                  text_field : Optional[str] = 'body', 
                  pipeline : Optional[Any] = None,
+                 dataset : str = None,
+                 variant : str = 'terrier_stemmed_text',
                  memory : bool = False,
                  **kwargs):
         Engine.__init__(self, **kwargs)
@@ -23,11 +25,19 @@ class Terrier(Engine):
             pt.init()
         self.index_ref = index_ref
         self.text_field = text_field
-        try:
-            self.__index = pt.IndexFactory.of(index_ref, memory=memory) if isinstance(index_ref, str) else index_ref
-        except Exception as e:
-            msg = "Could not open Terrier index from: " + str(index_ref)
-            raise EngineConnectionException(self.name, msg, e)
+
+        if dataset is not None:
+            try:
+                self.__index = pt.get_dataset(dataset).get_index(variant=variant)
+            except Exception as e:
+                msg = "Could not open Terrier index from dataset: " + dataset
+                raise EngineConnectionException(self.name, msg, e)
+        else:
+            try:
+                self.__index = pt.IndexFactory.of(index_ref, memory=memory) if isinstance(index_ref, str) else index_ref
+            except Exception as e:
+                msg = "Could not open Terrier index from: " + str(index_ref)
+                raise EngineConnectionException(self.name, msg, e)
         self.__reader = self.__index.getMetaIndex()
         if self.__reader is None: log.warning("No reader defined, cannot fetch document text, doing so will result in an error")
         for k in ['docno', text_field]:

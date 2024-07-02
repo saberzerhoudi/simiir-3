@@ -27,6 +27,8 @@ class PyTerrierSearchInterface(BaseSearchInterface):
     """
     def __init__(self, 
                  index_or_dir : Union[str, Any], 
+                 dataset : Optional[str] = None,
+                 variant : Optional[str] = 'terrier_stemmed_text',
                  pipeline : Optional[Any] = None,
                  wmodel : Optional[str] = None, 
                  controls : Optional[dict] = None, 
@@ -36,6 +38,8 @@ class PyTerrierSearchInterface(BaseSearchInterface):
                  ):
         super().__init__()
         self.__engine = Terrier(index_ref=index_or_dir, 
+                                dataset=dataset,
+                                variant=variant,
                                 wmodel=wmodel, 
                                 controls=controls, 
                                 properties=properties, 

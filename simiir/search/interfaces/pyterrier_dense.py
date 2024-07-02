@@ -36,6 +36,8 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
                  index_or_dir : Union[str, Any], 
                  model_name_or_path : str, 
                  meta_index : Union[str, Any], 
+                 dataset : str = None,
+                 variant : str = 'terrier_stemmed_text',
                  index_text_field : str = 'body', 
                  memory=False, 
                  batch_size=32, 
@@ -43,7 +45,11 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
                  verbose=False, 
                  device=None 
                  ):
-        super().__init__(meta_index, text_field=index_text_field, memory=memory)
+        super().__init__(meta_index, 
+                         text_field=index_text_field, 
+                         memory=memory,
+                         dataset=dataset,
+                         variant=variant)
         from pyterrier_dr import HgfBiEncoder
         if isinstance(index_or_dir, str):
             from pyterrier_dr import NumpyIndex 
