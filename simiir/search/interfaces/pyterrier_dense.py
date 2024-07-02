@@ -4,10 +4,6 @@ import logging
 
 log = logging.getLogger('simuser.search.interfaces.pyterrier')
 
-'''
-WIP
-'''
-
 class PyTerrierDenseInterface(PyTerrierSearchInterface):
     """
     Interface for using a Dense Retrieval model with PyTerrier
