@@ -12,6 +12,10 @@ class PyTerrierSearchInterface(BaseSearchInterface):
     Parameters:
     index_or_dir : Union[str, Any]
         Reference to PyTerrier Index
+    dataset : str
+        PyTerrier dataset with pre-built index
+    variant : str
+        Variant of the dataset index to use
     pipeline : Any
         Reference to pre-built PyTerrier pipeline
     wmodel : str
