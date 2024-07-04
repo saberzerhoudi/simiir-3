@@ -13,7 +13,8 @@ class Terrier(Engine):
                  wmodel : str = None,
                  controls : dict = None,
                  properties : dict = None,
-                 text_field : Optional[str] = 'body', 
+                 text_field : Optional[str] = 'text', 
+                 title_field : Optional[str] = 'title',
                  pipeline : Optional[Any] = None,
                  dataset : str = None,
                  variant : str = 'terrier_stemmed_text',
@@ -25,6 +26,7 @@ class Terrier(Engine):
             pt.init()
         self.index_ref = index_ref
         self.text_field = text_field
+        self.title_field = title_field
 
         if dataset is not None:
             try:
@@ -45,6 +47,7 @@ class Terrier(Engine):
             if k not in self.__reader.getKeys():
                 log.warning(f"Essential MetaData {k} not found in reader, cannot fetch document text, doing so will result in an error")
                 self.__reader = None
+        self.__text = pt.text.get_text(self.__index, text_field) if self.__reader else None
                 
         if pipeline is not None: self.__engine = pipeline
         elif wmodel is not None: self.__engine = pt.BatchRetrieve(self.__index, wmodel=wmodel, controls=controls, properties=properties)
@@ -75,7 +78,7 @@ class Terrier(Engine):
     def get_document(self, document_id):
         idx = self.__reader.getDocument('docno', document_id)
         content = self.__reader.getItem(self.text_field, int(idx))
-        try: title = self.__reader.getItem('title', int(idx))
+        try: title = self.__reader.getItem(self.title_field, int(idx))
         except: title = "NA"
 
         return Document(id=document_id, content=content, doc_id=document_id, title=title)
@@ -102,13 +105,13 @@ class Terrier(Engine):
             query.terms = terms.decode('utf-8')
     
     @staticmethod
-    def _parse_terrier_response(response):
+    def _parse_terrier_response(response, title_field='title', text_field='text'):
         output = Response(response['query'].iloc[0])
         for i in range(len(response)):
             row = response.iloc[i]
-            title = getattr(row, 'title', "Untitled")
+            title = getattr(row, title_field, "NA")
             url = getattr(row, 'url', row.docno)
-            content = getattr(row, 'text', None) 
+            content = getattr(row, text_field, None) 
             rank = row['rank'] + 1
             docid = row.docno 
             score = row.score
@@ -132,9 +135,8 @@ class Terrier(Engine):
             terms = query.terms
             response = self.__engine.search(terms)
             response = response.sort_values('score', ascending=False).head(pagelen)
+            if self.__reader: response = self.__text.transform(response)
             response['source'] = self.index_ref
-            if self.__reader:
-                response['text'] = response['docno'].apply(lambda x: self.__reader.getDocument('docno', x))
             response = self._parse_terrier_response(response)
         return response
 

@@ -26,6 +26,8 @@ class PyTerrierSearchInterface(BaseSearchInterface):
         Properties for the weighting model
     text_field : str
         Field in the index to use as the text field
+    title_field : str
+        Field in the index to use as the title field
     memory : bool
         Whether to load the index into memory
     """
@@ -37,7 +39,8 @@ class PyTerrierSearchInterface(BaseSearchInterface):
                  wmodel : Optional[str] = None, 
                  controls : Optional[dict] = None, 
                  properties : Optional[dict] = None, 
-                 text_field : Optional[str] = 'body', 
+                 text_field : Optional[str] = 'text', 
+                 title_field : Optional[str] = 'title',
                  memory : Optional[bool] = False,
                  ):
         assert index_or_dir is not None or dataset is not None, "No index or dataset defined"
@@ -49,6 +52,7 @@ class PyTerrierSearchInterface(BaseSearchInterface):
                                 controls=controls, 
                                 properties=properties, 
                                 text_field=text_field,
+                                title_field=title_field,
                                 pipeline=pipeline,
                                 memory=memory)
 
@@ -81,6 +85,8 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
         Variant of the dataset index to use
     index_text_field : str
         Field in the index to use as the text field
+    index_title_field : str
+        Field in the index to use as the title field
     memory : bool
         Whether to load the index into memory
     batch_size : int
@@ -98,7 +104,8 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
                  meta_index : Union[str, Any], 
                  dataset : Optional[str] = None,
                  variant : Optional[str] = 'terrier_stemmed_text',
-                 index_text_field : Optional[str] = 'body', 
+                 index_text_field : Optional[str] = 'text', 
+                 index_title_field : Optional[str] = 'title',
                  memory : Optional[bool] = False, 
                  batch_size : Optional[int] = 32, 
                  text_field : Optional[str] = 'text', 
@@ -107,6 +114,7 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
                  ):
         super().__init__(meta_index, 
                          text_field=index_text_field, 
+                         title_field=index_title_field,
                          memory=memory,
                          dataset=dataset,
                          variant=variant)
@@ -129,6 +137,7 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
                      dataset : str, # Pyterrier dataset with pre-built index
                      variant : str = 'terrier_stemmed_text', # Variant of the dataset index to use
                      meta_index_text_field : str = 'text', 
+                     meta_index_title_field : str = 'title',
                      memory=False, 
                      batch_size=32, 
                      text_field='text', 
@@ -138,7 +147,16 @@ class PyTerrierDenseInterface(PyTerrierSearchInterface):
         if not pt.started():
             pt.init()
         meta_index_ref = pt.get_dataset(dataset).get_index(variant=variant)
-        return cls(index_or_dir, model_name_or_path, meta_index_ref, index_text_field=meta_index_text_field, memory=memory, batch_size=batch_size, text_field=text_field, verbose=verbose, device=device)
+        return cls(index_or_dir, 
+                   model_name_or_path, 
+                   meta_index_ref, 
+                   index_text_field=meta_index_text_field, 
+                   index_title_field=meta_index_title_field,
+                   memory=memory, 
+                   batch_size=batch_size, 
+                   text_field=text_field, 
+                   verbose=verbose, 
+                   device=device)
 
 class PyterrierReRankerInterface(PyTerrierSearchInterface):
     """
@@ -161,6 +179,8 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
         Properties for the weighting model
     index_text_field : str
         Field in the index to use as the text field
+    index_title_field : str
+        Field in the index to use as the title field
     memory : bool
         Whether to load the index into memory
     batch_size : int
@@ -182,7 +202,8 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
                  wmodel : Optional[str] = 'BM25',
                  controls : Optional[dict] = None,
                  properties : Optional[dict] = None,
-                 index_text_field : Optional[str] = 'body', 
+                 index_text_field : Optional[str] = 'text', 
+                 index_title_field : Optional[str] = 'title',
                  memory : Optional[bool] = False, 
                  batch_size : Optional[int] = 32, 
                  text_field : Optional[str] = 'text', 
@@ -197,6 +218,7 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
                          controls=controls, 
                          properties=properties, 
                          text_field=index_text_field, 
+                         title_field=index_title_field,
                          memory=memory)
         import pyterrier as pt
         if not pt.started():
@@ -230,6 +252,7 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
                      controls : dict = None,
                      properties : dict = None,
                      meta_index_text_field : str = 'text', 
+                     meta_index_title_field : str = 'title',
                      memory=False, 
                      batch_size=32, 
                      text_field='text', 
@@ -245,6 +268,7 @@ class PyterrierReRankerInterface(PyTerrierSearchInterface):
                    controls=controls, 
                    properties=properties, 
                    index_text_field=meta_index_text_field, 
+                   index_title_field=meta_index_title_field,
                    memory=memory, 
                    batch_size=batch_size, 
                    text_field=text_field, 
