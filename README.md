@@ -15,7 +15,8 @@ The reason for updated the packages was to create a cleaner and clearer separati
         - Users to be added TODO(@zaber):`MarkovSearchSimulatedUser` and TODO(@leifos):`ConversationalSearchSimulatedUser` 
 - user: contains the components for building a simulated user.
     - contexts: 
-        - `Memory`: provides a container for storing what actions, etc the user performed during their interaction with the search system. It represents their internal state, knowledge of the world, etc. 
+        - `Memory`: provides a container for storing what actions, etc the user performed during their interaction with the search system. It represents their internal state, knowledge of the world, etc.
+        - `Cognitive State`: allows for the modelling of the potential impact of users' cognitive states (e.g., certainty level and sentiment), in addition to the long-term memory effect, on (conversational) search interactions. 
     - loggers:
         - `Action`: the current set of actions: 'QUERY', 'SERP', 'SNIPPET', 'DOC', 'MARK'
         - `BaseLogger`, `FixedCostLogger`, etc: provider a mechanism for logging user actions, recording their costs, and goals, and checking whether the user is finished. 
