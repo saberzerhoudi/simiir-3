@@ -2,7 +2,7 @@ from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
 from simiir.user.query_generators.smarter import SmarterQueryGenerator
 
-class AdditionalQueryGenerator(SmarterQueryGenerator):
+class Test2ttgerg(SmarterQueryGenerator):
     """
     Implementing strategies four and five from Heikki's 2009 paper.
     Given n fixed query terms, we then append query terms to the end of the fixed query m times.
