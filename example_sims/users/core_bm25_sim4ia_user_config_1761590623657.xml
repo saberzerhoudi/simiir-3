@@ -1,0 +1,43 @@
+<!-- Generated User Configuration -->
+<userConfiguration id="template-1761590596126_user" type="SearchUser">
+
+  <query_generator class="Test2ttgerg">
+  </query_generator>
+
+  <result_classifier class="StochasticInformedTrecTextClassifier">
+    <attribute name="qrel_file" type="string" value="../example_data/CORE/core.qrels" is_argument="true" />
+    <attribute name="rprob" type="string" value="1.0" is_argument="true" />
+    <attribute name="nprob" type="string" value="0.0" is_argument="true" />
+    <attribute name="data_handler" type="string" value="0" is_argument="true" />
+  </result_classifier>
+
+  <result_classifier class="StochasticInformedTrecTextClassifier">
+    <attribute name="qrel_file" type="string" value="../example_data/CORE/core.qrels" is_argument="true" />
+    <attribute name="rprob" type="string" value="1.0" is_argument="true" />
+    <attribute name="nprob" type="string" value="0.0" is_argument="true" />
+    <attribute name="data_handler" type="string" value="0" is_argument="true" />
+  </result_classifier>
+
+  <result_stopping_decider class="TimeDecisionMaker">
+    <attribute name="timeout_threshold" type="string" value="100" is_argument="true" />
+  </result_stopping_decider>
+
+  <logger class="FixedCostLogger">
+    <attribute name="time_limit" type="string" value="2000" is_argument="true" />
+    <attribute name="query_cost" type="string" value="10" is_argument="true" />
+    <attribute name="document_cost" type="string" value="20" is_argument="true" />
+    <attribute name="snippet_cost" type="string" value="3" is_argument="true" />
+    <attribute name="serp_results_cost" type="string" value="5" is_argument="true" />
+    <attribute name="mark_document_cost" type="string" value="3" is_argument="true" />
+  </logger>
+
+  <user_context class="Memory">
+    <attribute name="relevance_revision" type="string" value="1" is_argument="true" />
+    <attribute name="query_after_SERP" type="string" value="True" is_argument="true" />
+  </user_context>
+
+  <serp_impression class="SimpleSERPImpression">
+    <attribute name="qrel_file" type="string" value="../example_data/CORE/core.qrels" is_argument="true" />
+  </serp_impression>
+
+</userConfiguration>
